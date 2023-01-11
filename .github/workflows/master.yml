@@ -1,4 +1,4 @@
-name: DCSA-IoT MASTER CI
+name: DCSA-IOT-Commercial MASTER CI
 
 on:
   push:
@@ -14,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          path: DCSA-IoT
+          path: DCSA-IOT-Commercial
           submodules: recursive
 
       - name: Set up Java JDK
@@ -30,11 +30,11 @@ jobs:
           repositories: '[{ "id": "github", "name": "DCSA Backend repo", "url": "https://maven.pkg.github.com/dcsaorg/DCSA-Core", "releases": { "enabled": "true" }, "snapshots": { "enabled": "true" } }]'
           servers: '[{ "id": "github", "username": "${{ secrets.DCSA_USER }}", "password": "${{ secrets.DCSA_PACKAGES_PAT }}" }]'
 
-      - name: Build IoT
-        run: cd DCSA-IoT && mvn clean -U -B package -Ddcsa.artifacttype=-SNAPSHOT
+      - name: Build IoT Commercial
+        run: cd DCSA-IOT-Commercial && mvn clean -U -B package -Ddcsa.artifacttype=-SNAPSHOT
 
       - name: Build and run the microservices
-        run: cd DCSA-IoT && docker-compose -f docker-compose.yml --env-file=.github/.env up -d -V --build
+        run: cd DCSA-IOT-Commercial && docker-compose -f docker-compose.yml --env-file=.github/.env up -d -V --build
 
       - name: Fetch Backend Status
         run: |
@@ -53,7 +53,7 @@ jobs:
           if [[ "$status" != "UP" ]]; then
             curl -v http://localhost:9090/actuator/health || :
             docker ps || :
-            docker logs dcsa-iot-dcsa-iot-1 || :
+            docker logs dcsa-IOT-Commercial-commercial-dcsa-IOT-Commercial-commercial-1 || :
             exit 1
           fi
 
@@ -61,7 +61,7 @@ jobs:
         id: run-newman
         uses: anthonyvscode/newman-action@v1
         with:
-          collection: DCSA-IoT/postman-collection.json
+          collection: DCSA-IOT-Commercial/postman-collection.json
           reporters: cli
           insecure: true
 

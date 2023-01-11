@@ -10,19 +10,19 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
-	<groupId>org.dcsa.iot</groupId>
-	<artifactId>dcsa-iot-parent</artifactId>
+	<name>DCSA IoT Commercial</name>
+	<groupId>org.dcsa.iot.commercial</groupId>
+	<artifactId>dcsa-iot-commercial-parent</artifactId>
 	<version>${revision}${sha1}${changelist}</version>
 	<packaging>pom</packaging>
-	<name>DCSA-IoT</name>
-	<description>IoT (Booking + EBL)</description>
+	<description>DCSA IoT Commercial</description>
 
 	<properties>
-		<!-- Define DCSA-IoT version -->
+		<!-- Define DCSA-IoT-Commercial version -->
 		<revision>1.0.0</revision>
 		<sha1/>
 		<changelist>-SNAPSHOT</changelist>
-		<!-- End: Define DCSA-IoT version -->
+		<!-- End: Define DCSA-IoT-Commercial version -->
 
 		<!-- Define Shared Kernel version -->
 		<dcsa.shared-kernel.version>0.3.0</dcsa.shared-kernel.version>
@@ -36,10 +36,10 @@
 	</properties>
 
 	<modules>
-		<module>iot-transfer-obj</module>
-		<module>iot-domain</module>
-		<module>iot-service</module>
-		<module>iot-application</module>
+		<module>iot-commercial-transfer-obj</module>
+		<module>iot-commercial-domain</module>
+		<module>iot-commercial-service</module>
+		<module>iot-commercial-application</module>
 	</modules>
 
 	<dependencies>
@@ -65,18 +65,18 @@
 			</dependency>
 
 			<dependency>
-				<groupId>org.dcsa.iot</groupId>
-				<artifactId>dcsa-iot-transfer-obj</artifactId>
+				<groupId>org.dcsa.iot.commercial</groupId>
+				<artifactId>dcsa-iot-commercial-transfer-obj</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.dcsa.iot</groupId>
-				<artifactId>dcsa-iot-domain</artifactId>
+				<groupId>org.dcsa.iot.commercial</groupId>
+				<artifactId>dcsa-iot-commercial-domain</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.dcsa.iot</groupId>
-				<artifactId>dcsa-iot-service</artifactId>
+				<groupId>org.dcsa.iot.commercial</groupId>
+				<artifactId>dcsa-iot-commercial-service</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
