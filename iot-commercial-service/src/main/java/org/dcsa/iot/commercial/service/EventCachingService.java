@@ -69,7 +69,7 @@ public class EventCachingService {
   @SneakyThrows
   private EventCache buildEventCache(IoTCommercialDomainEvent domainEvent) {
     return EventCache.builder()
-      .eventID(domainEvent.eventId())
+      .eventID(domainEvent.eventID())
       .eventDateTime(domainEvent.eventDateTime())
       .eventCreatedDateTime(domainEvent.eventCreatedDateTime())
       .eventType(EventType.IOT_COMMERCIAL)

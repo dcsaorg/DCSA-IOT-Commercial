@@ -1,16 +1,15 @@
 package org.dcsa.iot.commercial.domain.persistence.repository.specification;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Expression;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import lombok.Builder;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.dcsa.iot.commercial.domain.persistence.entity.DocumentReference_;
 import org.dcsa.iot.commercial.domain.persistence.entity.EventCache;
 import org.dcsa.iot.commercial.domain.persistence.entity.EventCache_;
+import org.dcsa.iot.commercial.domain.persistence.entity.IoTCommercialEvent_;
 import org.dcsa.iot.commercial.domain.persistence.entity.enums.EventType;
+import org.dcsa.iot.commercial.domain.persistence.entity.enums.IoTEventTypeCode;
 import org.dcsa.skernel.infrastructure.http.queryparams.ParsedQueryParameter;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -24,7 +23,10 @@ public class EventCacheSpecification {
 
   public record EventCacheFilters(
     List<ParsedQueryParameter<OffsetDateTime>> eventCreatedDateTime,
-    List<ParsedQueryParameter<OffsetDateTime>> eventDateTime
+    List<ParsedQueryParameter<OffsetDateTime>> eventDateTime,
+    List<IoTEventTypeCode> iotEventTypeCodes,
+    String carrierBookingReference,
+    String equipmentReference
   ) {
     @Builder
     public EventCacheFilters { }
@@ -35,7 +37,7 @@ public class EventCacheSpecification {
 
     return (Root<EventCache> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
       List<Predicate> predicates = new ArrayList<>();
-
+      JsonPathExpressionBuilder jsonPath = new JsonPathExpressionBuilder(root, builder, EventCache_.CONTENT);
       predicates.add(builder.equal(root.get(EventCache_.EVENT_TYPE), EventType.IOT_COMMERCIAL));
 
       handleParsedQueryParameter(
@@ -50,6 +52,27 @@ public class EventCacheSpecification {
         builder,
         root.get(EventCache_.EVENT_DATE_TIME),
         filters.eventDateTime
+      );
+
+      if (filters.iotEventTypeCodes != null && !filters.iotEventTypeCodes.isEmpty()) {
+        predicates.add(
+          jsonPath
+            .of(IoTCommercialEvent_.IOT_EVENT_TYPE_CODE)
+            .in(filters.iotEventTypeCodes.stream().map(Enum::name).toList()));
+      }
+
+      conditionallyAddEqualsFilter(
+        predicates,
+        builder,
+        jsonPath.of(IoTCommercialEvent_.RELATED_DOCUMENT_REFERENCES, DocumentReference_.DOCUMENT_REFERENCE_VALUE),
+        filters.carrierBookingReference
+      );
+
+      conditionallyAddEqualsFilter(
+        predicates,
+        builder,
+        jsonPath.of(IoTCommercialEvent_.EQUIPMENT_REFERENCE),
+        filters.equipmentReference
       );
 
       return builder.and(predicates.toArray(Predicate[]::new));
@@ -82,4 +105,27 @@ public class EventCacheSpecification {
       case LT -> builder.lessThan(field, value);
     };
   }
+  private static <T> void conditionallyAddEqualsFilter(List<Predicate> predicates,
+                                                       CriteriaBuilder builder,
+                                                       Expression<?> field,
+                                                       T filterValue) {
+    if (filterValue != null) {
+      predicates.add(
+        builder.equal(
+          field,
+          filterValue
+        )
+      );
+    }
+  }
+    private record JsonPathExpressionBuilder(Root<EventCache> root, CriteriaBuilder builder, String jsonFieldName) {
+      public Expression<String> of(String... jsonPathElements) {
+        List<Expression<?>> expressions = new ArrayList<>();
+        expressions.add(root.get(jsonFieldName));
+        for (String e : jsonPathElements) {
+          expressions.add(builder.literal(e));
+        }
+        return builder.function("jsonb_extract_path_text", String.class, expressions.toArray(Expression[]::new));
+      }
+    }
 }

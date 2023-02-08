@@ -53,7 +53,7 @@ public class IoTCommercialEvent {
 
   @Enumerated(EnumType.STRING)
   @Column(name = "iot_event_type_code")
-  private IoTEventTypeCode IotEventTypeCode;
+  private IoTEventTypeCode iotEventTypeCode;
 
   @Enumerated(EnumType.STRING)
   @Column(name = "iot_event_code")
