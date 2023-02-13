@@ -5,7 +5,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.dcsa.iot.commercial.domain.persistence.entity.EventCache;
+import org.dcsa.iot.commercial.domain.persistence.entity.IoTCommercialEvent;
 import org.dcsa.iot.commercial.domain.persistence.repository.EventCacheRepository;
+import org.dcsa.iot.commercial.domain.persistence.repository.IoTCommercialEventRepository;
 import org.dcsa.iot.commercial.domain.persistence.repository.specification.EventCacheSpecification;
 import org.dcsa.iot.commercial.domain.persistence.repository.specification.EventCacheSpecification.EventCacheFilters;
 import org.dcsa.iot.commercial.service.domain.IoTCommercialDomainEvent;
@@ -28,6 +30,7 @@ public class IoTCommercialEventService {
   private final IoTCommercialEventTOMapper ioTCommercialEventTOMapper;
   private final IoTCommercialDomainEventMapper ioTCommercialDomainEventMapper;
   private final ObjectMapper objectMapper;
+  private final IoTCommercialEventRepository ioTCommercialEventRepository;
 
   @Transactional
   public IoTCommercialEventTO findEvent(UUID eventID) {
@@ -45,19 +48,20 @@ public class IoTCommercialEventService {
 
   @Transactional
   public IoTCommercialDomainEvent findDomainEvent(UUID eventID) {
-    throw ConcreteRequestErrorMessageException.notFound("No IoT events found for id = " + eventID);
-    // TODO fetch event from db and convert it to IoTCommercialDomainEvent (not from cache)
-    // return ioTCommercialDomainEventMapper.toDomain(ioTCommercialEventRepository.findById(eventId)
-    //    .orElseThrow(() -> ConcreteRequestErrorMessageException.notFound("No IoT-Commercial events found for id = " + eventID))));
+    return ioTCommercialDomainEventMapper.toDomain(
+        ioTCommercialEventRepository
+            .findById(eventID)
+            .orElseThrow(
+                () ->
+                    ConcreteRequestErrorMessageException.notFound(
+                        "No IoT-Commercial events found for id = " + eventID)));
   }
 
   @Transactional
   public List<IoTCommercialDomainEvent> findDomainEvents() {
-    return Collections.emptyList();
-    // TODO fetch events from db and convert them to IoTCommercialDomainEvent (not from cache)
-    // return ioTCommercialEventRepository.findAll().stream()
-    //    .map(ioTCommercialDomainEventMapper::toDomain)
-    //    .toList();
+    return ioTCommercialEventRepository.findAll().stream()
+        .map(ioTCommercialDomainEventMapper::toDomain)
+        .toList();
   }
 
   @SneakyThrows

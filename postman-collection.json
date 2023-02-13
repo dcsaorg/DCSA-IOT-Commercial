@@ -42,6 +42,413 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "GET IoT events",
+			"item": [
+				{
+					"name": "Positive test cases",
+					"item": [
+						{
+							"name": "GET All Events",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"/*\r",
+											"pm.test(\"Non-empty response\", () => {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    // We have 1 IoT event atm\r",
+											"    pm.expect(jsonData.length).to.gt(0);\r",
+											"});\r",
+											"*/\r",
+											"const schema = pm.collectionVariables.get(\"IoT_EVENT_SCHEMA\");\r",
+											"const schemaObject = JSON.parse(schema);\r",
+											"\r",
+											"pm.test('Schema is valid', () => {\r",
+											"    pm.response.to.have.jsonSchema(schemaObject);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/events?limit=1",
+									"host": [
+										"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+									],
+									"path": [
+										"events"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "With Limit 1",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"const schema = pm.collectionVariables.get(\"IoT_EVENT_SCHEMA\");\r",
+											"const schemaObject = JSON.parse(schema);\r",
+											"\r",
+											"pm.test('Schema is valid', () => {\r",
+											"    pm.response.to.have.jsonSchema(schemaObject);\r",
+											"});\r",
+											"/*\r",
+											"pm.test(\"Limit is respected\", () => {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.length).to.eql(1);\r",
+											"});\r",
+											"*/"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/events?limit=1",
+									"host": [
+										"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+									],
+									"path": [
+										"events"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "By equipmentReference",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const schema = pm.collectionVariables.get(\"IoT_EVENT_SCHEMA\");\r",
+											"const schemaObject = JSON.parse(schema);\r",
+											"\r",
+											"pm.test('Schema is valid', () => {\r",
+											"    pm.response.to.have.jsonSchema(schemaObject);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Requests match query parameter equipmentReference\", () => {\r",
+											"  const jsonData = pm.response.json();\r",
+											"  jsonData.map(item => {\r",
+											"  pm.expect(item.payload.equipmentReference).to.equal(\"MSKU9070323\");\r",
+											"  });\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/events?equipmentReference=MSKU9070323",
+									"host": [
+										"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+									],
+									"path": [
+										"events"
+									],
+									"query": [
+										{
+											"key": "equipmentReference",
+											"value": "MSKU9070323"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "By iotEventTypeCodes",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const schema = pm.collectionVariables.get(\"IoT_EVENT_SCHEMA\");\r",
+											"const schemaObject = JSON.parse(schema);\r",
+											"\r",
+											"pm.test('Schema is valid', () => {\r",
+											"    pm.response.to.have.jsonSchema(schemaObject);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Requests match query parameter iotEventTypeCodes\", () => {\r",
+											"  const jsonData = pm.response.json();\r",
+											"  jsonData.map(item => {\r",
+											"  pm.expect(item.payload.iotEventTypeCode).to.equal(\"DETC\");\r",
+											"  });\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/events?iotEventTypeCodes=DETC",
+									"host": [
+										"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+									],
+									"path": [
+										"events"
+									],
+									"query": [
+										{
+											"key": "iotEventTypeCodes",
+											"value": "DETC"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "By eventCreatedDateTime gte",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"pm.test(\"Requests match query parameter eventCreatedDateTime:gte\", () => {\r",
+											"    const queryDateTime = new Date('1999-05-01T16:00:00-01:00').toISOString();\r",
+											"  const jsonData = pm.response.json();\r",
+											"  jsonData.map(item => {\r",
+											"      let eventCreatedDateTime = new Date(item.metadata.eventCreatedDateTime).toISOString();\r",
+											"       pm.expect(eventCreatedDateTime > queryDateTime).to.be.true;\r",
+											"  });\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/events?eventCreatedDateTime:gte=2020-05-01T00:00:00-01:00",
+									"host": [
+										"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+									],
+									"path": [
+										"events"
+									],
+									"query": [
+										{
+											"key": "eventCreatedDateTime:gte",
+											"value": "2020-05-01T00:00:00-01:00"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "By eventDateTime eq",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"pm.test(\"Requests match query parameter eventDateTime:eq\", () => {\r",
+											"    const queryDateTime = new Date('2021-05-02T22:00:00Z').toISOString();\r",
+											"  const jsonData = pm.response.json();\r",
+											"  jsonData.map(item => {\r",
+											"      let eventDateTime = new Date(item.payload.eventDateTime).toISOString();\r",
+											"       pm.expect(eventDateTime == queryDateTime).to.be.true;\r",
+											"  });\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/events?eventDateTime:eq=2021-05-02T22:00:00Z",
+									"host": [
+										"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+									],
+									"path": [
+										"events"
+									],
+									"query": [
+										{
+											"key": "eventDateTime:eq",
+											"value": "2021-05-02T22:00:00Z"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"",
+									"pm.test(\"Status code is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								]
+							}
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"API-Version is present\", () => {",
+							"    pm.response.to.have.header(\"API-Version\");",
+							"});",
+							"",
+							"pm.test(\"API-Version header is set correctly\", () => {",
+							"    pm.expect(pm.response.headers.get(\"API-Version\")).to.eql(pm.collectionVariables.get(\"IoT_SPEC_VERSION\"));",
+							"});"
+						]
+					}
+				}
+			]
 		}
 	],
 	"event": [
@@ -74,6 +481,21 @@
 			"key": "HEALTH_ENDPOINT",
 			"value": "/actuator/health",
 			"type": "default"
+		},
+		{
+			"key": "IoT_CONTEXT_PATH",
+			"value": "/iot-commercial/v1",
+			"type": "string"
+		},
+		{
+			"key": "IoT_SPEC_VERSION",
+			"value": "1.0.0",
+			"type": "string"
+		},
+		{
+			"key": "IoT_EVENT_SCHEMA",
+			"value": "{\n    \"type\": \"array\",\n    \"items\": {\n      \"required\": [\n        \"metadata\"\n      ],\n      \"type\": \"object\",\n      \"description\": \"The `IoTEvent` is a specialized event to handle all events related to IoT readings.\\n\",\n      \"properties\": {\n        \"metadata\": {\n          \"description\": \"The `metadata` of the `IoTEvent` - includes all non-business related attributes\\n\",\n          \"required\": [\n            \"eventCreatedDateTime\",\n            \"eventID\",\n            \"publisher\",\n            \"publisherRole\"\n          ],\n          \"type\": \"object\",\n          \"properties\": {\n            \"eventID\": {\n              \"type\": \"string\",\n              \"description\": \"The unique identifier for this event (*the message - not the source*).\\n\",\n              \"format\": \"uuid\"\n            },\n            \"eventCreatedDateTime\": {\n              \"type\": \"string\",\n              \"description\": \"The timestamp of when the event was created.\\n\"            \n            },\n            \"retractedEventID\": {\n              \"maxLength\": 100,\n              \"type\": \"string\",\n              \"description\": \"Reference to an Event that is to be retracted. If provided, the payload of the event **MUST not** be included.\\n\"\n            },\n            \"publisher\": {\n              \"required\": [\n                \"carrierCode\",\n                \"carrierCodeListProvider\"\n              ],\n              \"type\": \"object\",\n              \"description\": \"The party sending the event\\n\",\n              \"properties\": {\n                \"partyName\": {\n                  \"maxLength\": 100,\n                  \"pattern\": \"^\\\\S+(\\\\s+\\\\S+)*$\",\n                  \"type\": \"string\",\n                  \"description\": \"Name of the party.\\n\"\n                },\n                \"carrierCode\": {\n                  \"maxLength\": 4,\n                  \"pattern\": \"^\\\\S+(\\\\s+\\\\S+)*$\",\n                  \"type\": \"string\",\n                  \"description\": \"The code containing the SCAC and/or the SMDG code to specify the issuing carrier.  Details about the issuer can be given in the Document Parties entity using the party function code MS.\\n\"\n                },\n                \"carrierCodeListProvider\": {\n                  \"type\": \"string\",\n                  \"description\": \"The provider used for identifying the issuer Code. Possible values are:\\n- SMDG (Ship Message Design Group)\\n- NMFTA (National Motor Freight Traffic Association) _includes SPLC (Standard Point Location Code)_\\n\",\n                  \"enum\": [\n                    \"SMDG\",\n                    \"NMFTA\"\n                  ]\n                }\n              }\n            },\n            \"publisherRole\": {\n              \"type\": \"string\",\n              \"description\": \"The party function code of the publisher. The values are divided into 2 categories:\\n\\n#### Carrier\\n- CA (Carrier)\\n- AG (Carrier local agent)\\n\\n#### Service Provider\\n- VSP (Visibility Service Provider)\\n- SVP (Any other service provider)\\n\\nMore details can be found on <a href=\\\"https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/publisherrole.csv\\\">GitHub</a>\\n\",\n              \"enum\": [\n                \"CA\",\n                \"AG\",\n                \"VSP\",\n                \"SVP\"\n              ]\n            },\n            \"eventType\": {\n              \"type\": \"string\",\n              \"description\": \"The type of the Event - in this API it can only be IoT\\n\\n- IOT (An IoT event)\\n\",\n              \"enum\": [\n                \"IOT\"\n              ]\n            }\n          }\n        },\n        \"payload\": {\n          \"description\": \"The business attributes related to the `IoTEvent`.\\n\\nThis is a conditional object - if `retractedEventID` is **not** provided in the `metadata` then this object is mandatory\\n\",\n          \"required\": [\n            \"equipmentReference\",\n            \"eventClassifierCode\",\n            \"eventDateTime\",\n            \"iotEventCode\",\n            \"iotEventTypeCode\"\n          ],\n          \"type\": \"object\",\n          \"properties\": {\n            \"eventClassifierCode\": {\n              \"type\": \"string\",\n              \"description\": \"Code for the event classifier. Values can vary depending on eventType\\n\",\n              \"enum\": [\n                \"ACT\"\n              ]\n            },\n            \"eventDateTime\": {\n              \"type\": \"string\",\n              \"description\": \"The local date and time, when the event took place or when the event will take place, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.\\n\"\n            },\n            \"iotEventTypeCode\": {\n              \"type\": \"string\",\n              \"description\": \"Unique identifier for `iotEventTypeCode` - can be one of the following values\\n- DETC (Detected)\\n\\nMore details can be found on <a href=\\\"https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/ioteventtypecodes.csv\\\">GitHub</a>\\n\",\n              \"enum\": [\n                \"DETC\"\n              ]\n            },\n            \"iotEventCode\": {\n              \"maxLength\": 3,\n              \"type\": \"string\",\n              \"description\": \"The `iotTypeCode` is used to identify the type of `IotEvent`. Can be one of the following values\\n- DRO (Door Opened)\\n\\nMore details can be found on [GitHub](https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/iottypecodes.csv)\\n\",\n              \"enum\": [\n                \"DRO\"\n              ]\n            },\n            \"geoLocation\": {\n              \"required\": [\n                \"latitude\",\n                \"longitude\"\n              ],\n              \"type\": \"object\",\n              \"description\": \"An interface used to express a location using `latitude` and `longitude`\\n\",\n              \"properties\": {\n                \"locationName\": {\n                  \"maxLength\": 100,\n                  \"type\": \"string\",\n                  \"description\": \"The name of the location.\"\n                },\n                \"latitude\": {\n                  \"maxLength\": 10,\n                  \"type\": \"string\",\n                  \"description\": \"Geographic coordinate that specifies the northÔÇôsouth position of a point on the Earth&apos;s surface.\"\n                },\n                \"longitude\": {\n                  \"maxLength\": 11,\n                  \"type\": \"string\",\n                  \"description\": \"Geographic coordinate that specifies the eastÔÇôwest position of a point on the Earth&apos;s surface.\"\n                }\n              }\n            },\n            \"equipmentReference\": {\n              \"maxLength\": 11,\n              \"pattern\": \"^\\\\S+(\\\\s+\\\\S+)*$\",\n              \"type\": \"string\",\n              \"description\": \"The unique identifier for the equipment, which should follow the BIC ISO Container Identification Number where possible.\\nAccording to ISO 6346, a container identification code consists of a 4-letter prefix and a 7-digit number (composed of a 3-letter owner code, a category identifier, a serial number, and a check-digit).\\n\\nIf a container does not comply with ISO 6346, it is suggested to follow [Recommendation #2: Containers with non-ISO identification](https://smdg.org/documents/smdg-recommendations) from SMDG.\\n\"\n            },\n            \"relatedDocumentReferences\": {\n              \"type\": \"array\",\n              \"description\": \"An optional list of key-value (`type`-`value`) pairs representing links to objects relevant to the event. The `type`-field is used to describe where the `value`-field is pointing to.\\n\",\n              \"items\": {\n                \"type\": \"object\",\n                \"properties\": {\n                  \"type\": {\n                    \"type\": \"string\",\n                    \"description\": \"Describes where the `value` is pointing to. Can be one of the following values\\n- CBR (Carrier Booking Request Reference)\\n- BKG (Carrier Booking Reference)\\n- SHI (Shipping Instruction Reference)\\n- TRD (Transport Document Reference)\\n\",\n                    \"enum\": [\n                      \"CBR\",\n                      \"BKG\",\n                      \"SHI\",\n                      \"TRD\"\n                    ]\n                  },\n                  \"value\": {\n                    \"maxLength\": 100,\n                    \"type\": \"string\",\n                    \"description\": \"The reference to the object described by `type`\\n\"\n                  }\n                }\n              }\n            }\n          }\n        }\n      }\n    } \n  }",
+			"type": "string"
 		}
 	]
 }

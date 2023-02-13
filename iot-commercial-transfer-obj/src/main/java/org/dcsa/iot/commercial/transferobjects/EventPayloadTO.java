@@ -1,26 +1,19 @@
-package org.dcsa.iot.commercial.service.domain;
+package org.dcsa.iot.commercial.transferobjects;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
-import org.dcsa.iot.commercial.transferobjects.DocumentReference;
-import org.dcsa.iot.commercial.transferobjects.PartyTO;
-import org.dcsa.iot.commercial.transferobjects.enums.*;
+import org.dcsa.iot.commercial.transferobjects.enums.EventClassifierCode;
+import org.dcsa.iot.commercial.transferobjects.enums.IoTEventCode;
+import org.dcsa.iot.commercial.transferobjects.enums.IoTEventTypeCode;
 import org.dcsa.skernel.infrastructure.transferobject.LocationTO;
 import org.dcsa.skernel.infrastructure.validation.RestrictLocationTO;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.UUID;
 
-public record IoTCommercialDomainEvent(
-  @NotNull UUID eventID,
-  @NotNull OffsetDateTime eventCreatedDateTime,
-  UUID retractedEventID,
-  @NotNull @Valid PartyTO publisher,
-  @NotNull PublisherRole publisherRole,
-  EventType eventType,
+public record EventPayloadTO(
   @NotNull EventClassifierCode eventClassifierCode,
   @NotNull OffsetDateTime eventDateTime,
   @NotNull IoTEventTypeCode iotEventTypeCode,
@@ -28,8 +21,7 @@ public record IoTCommercialDomainEvent(
   @RestrictLocationTO({LocationTO.LocationType.GEO})
   @Valid LocationTO geoLocation,
   @NotBlank String equipmentReference,
-  List<@Valid DocumentReference> relatedDocumentReferences
-) {
-  @Builder
-  public IoTCommercialDomainEvent { }
-}
+  List<@Valid DocumentReference> relatedDocumentReferences){
+@Builder(toBuilder = true)
+public EventPayloadTO {}
+  }
