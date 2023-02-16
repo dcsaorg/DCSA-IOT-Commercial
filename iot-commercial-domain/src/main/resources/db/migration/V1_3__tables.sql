@@ -25,7 +25,7 @@ CREATE TABLE document_reference (
     id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
     document_reference_value varchar(35),
     document_reference_type varchar(3) CHECK (document_reference_type IN ('CBR','BKG','SHI','TRD')),
-    event_id uuid NULL REFERENCES event(event_id)
+    event_id uuid
 );
 
 -- TRIGGER FOR CACHING event_cache_queue

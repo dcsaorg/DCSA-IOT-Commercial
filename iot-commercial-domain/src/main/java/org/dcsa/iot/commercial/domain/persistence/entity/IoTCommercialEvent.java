@@ -24,6 +24,7 @@ import java.util.UUID;
 public class IoTCommercialEvent {
 
   @Id
+  @GeneratedValue
   @Column(name = "event_id", nullable = false)
   private UUID eventID;
 

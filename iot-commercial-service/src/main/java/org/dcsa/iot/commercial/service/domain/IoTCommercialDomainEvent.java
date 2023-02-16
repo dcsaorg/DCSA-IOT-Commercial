@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
-import org.dcsa.iot.commercial.transferobjects.DocumentReference;
+import org.dcsa.iot.commercial.transferobjects.DocumentReferenceTO;
 import org.dcsa.iot.commercial.transferobjects.PartyTO;
 import org.dcsa.iot.commercial.transferobjects.enums.*;
 import org.dcsa.skernel.infrastructure.transferobject.LocationTO;
@@ -28,8 +28,8 @@ public record IoTCommercialDomainEvent(
   @RestrictLocationTO({LocationTO.LocationType.GEO})
   @Valid LocationTO geoLocation,
   @NotBlank String equipmentReference,
-  List<@Valid DocumentReference> relatedDocumentReferences
+  List<@Valid DocumentReferenceTO> relatedDocumentReferences
 ) {
-  @Builder
+  @Builder(toBuilder = true)
   public IoTCommercialDomainEvent { }
 }
