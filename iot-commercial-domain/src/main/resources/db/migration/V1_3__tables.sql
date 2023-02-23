@@ -40,7 +40,7 @@ $$ LANGUAGE 'plpgsql';
 DROP TRIGGER IF EXISTS queue_iot_events ON iot_commercial_event;
 CREATE TRIGGER queue_iot_events AFTER INSERT ON iot_commercial_event
     FOR EACH ROW EXECUTE PROCEDURE queue_iot_event();
-
+/*
 -- example value from swagger
 INSERT INTO location (
   id,
@@ -84,8 +84,9 @@ INSERT INTO iot_commercial_event (
   TO_DATE('2021/05/03 21:02:44', 'yyyy/mm/dd hh24:mi:ss'),
   '8791f557-fe69-42c9-a420-f39f09dd6207'::uuid,
   'CA',
-  'DETC',
+
   'DRO',
   'MSKU9070323',
   '8791f557-fe69-42c9-a420-f39f023d6207'::uuid
 );
+*/
