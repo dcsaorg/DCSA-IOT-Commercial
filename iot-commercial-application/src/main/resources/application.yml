@@ -10,7 +10,7 @@ dcsa:
       initial-delay: 2000
       max-queue-results: 100
   dataloader:
-    autoload: []
+    autoload: [sample,reference]
     sources: classpath:db/dataloader-sources.yml
     endpoint: /unofficial/dataloader/load
     sampledata.hostport: ${sampledata_hostport}

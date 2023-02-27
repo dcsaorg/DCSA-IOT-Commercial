@@ -24,9 +24,14 @@ sources:
   - path: http://${dcsa.dataloader.sampledata.hostport}/referencedata.d
     type: csv
     groups: [reference]
-    includes: [partyfunctioncodes.csv, eventclassifiercodes.csv]
+    includes: [party_function, event_classifier]
 
   - path: http://${dcsa.dataloader.sampledata.hostport}/samples.d
     type: csv
     groups: [sample]
     includes: [carrier]
+
+  - path: classpath:db/reference.d
+    type: csv
+    groups: [reference]
+    dependsOn: [reference, sample]
