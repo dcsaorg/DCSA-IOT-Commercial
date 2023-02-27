@@ -24,22 +24,9 @@ sources:
   - path: http://${dcsa.dataloader.sampledata.hostport}/referencedata.d
     type: csv
     groups: [reference]
-   # includes: [carrier]
+    includes: [partyfunctioncodes.csv, eventclassifiercodes.csv]
 
   - path: http://${dcsa.dataloader.sampledata.hostport}/samples.d
     type: csv
     groups: [sample]
-    includes: [partyfunctioncodes, eventclassifiercodes]
-
-    # no need for this
- # - path: http://${dcsa.dataloader.sampledata.hostport}/implementation-detail-data.d
-  ##  type: csv
-  #  groups: [impl-detail]
- #   dependsOn: [reference, sample]
-###
-  - path: classpath:db/migration
-    type: flyway
-    historyTable: flyway_testdata_history
-    groups: [test]
-    dependsOn: [reference, sample, impl-detail]
-###
+    includes: [carrier]
