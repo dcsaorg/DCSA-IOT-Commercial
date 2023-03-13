@@ -24,7 +24,6 @@ import java.util.UUID;
 public class IoTCommercialEvent {
 
   @Id
-  @GeneratedValue
   @Column(name = "event_id", nullable = false)
   private UUID eventID;
 
@@ -70,4 +69,11 @@ public class IoTCommercialEvent {
   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinColumn(name = "event_location_id")
   private Location eventLocation;
+
+  @PrePersist
+  void setIdIfMissing() {
+    if (eventID == null) {
+      eventID = UUID.randomUUID();
+    }
+  }
 }
