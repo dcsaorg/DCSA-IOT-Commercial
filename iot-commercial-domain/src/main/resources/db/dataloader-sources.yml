@@ -21,12 +21,12 @@ defaults:
     onChecksumError: REFRESH
 
 sources:
-  - path: http://${dcsa.dataloader.sampledata.hostport}/referencedata.d
+  - path: classpath:db/referencedata.d
     type: csv
     groups: [reference]
     includes: [party_function, event_classifier]
 
-  - path: http://${dcsa.dataloader.sampledata.hostport}/samples.d
+  - path: classpath:db/samples.d
     type: csv
     groups: [sample]
     includes: [carrier]
