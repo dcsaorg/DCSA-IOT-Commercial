@@ -21,7 +21,7 @@ public record EventPayloadTO(
   @RestrictLocationTO({LocationTO.LocationType.GEO})
   @Valid LocationTO geoLocation,
   @NotBlank String equipmentReference,
-  List<@Valid DocumentReference> relatedDocumentReferences){
+  List<@Valid DocumentReferenceTO> relatedDocumentReferences){
 @Builder(toBuilder = true)
 public EventPayloadTO {}
   }

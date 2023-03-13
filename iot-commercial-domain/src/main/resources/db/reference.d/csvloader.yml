@@ -1,0 +1,51 @@
+# Sample data
+
+# All tables:
+#  * table - name of the table to populate
+#  * file - name of csv file to read data from
+#  * columns (list) - list of columns in the table if it can not be guessed from csvheader (optional*)
+#  * primaryKey - name of the primary key in the table if it is not the first column (optional*)
+#  * csvheader - true or false, overrides the default (optional)
+#  * emptyIsNull - true or false, overrides the default (optional)
+#  * otherNullValues - if need to override the default (optional)
+#
+# Note on columns:
+# The columns are deduced from the csvheader if there is one by some simple rules. Spaces and dashes (-) are
+# converted to underscore, camelCase is converted to snake_case and the name is trimmed. In cases where the csvheader
+# is absent or the columns can not be deduced in this way or if the columns are not all of type string it becomes
+# necessary to specify the columns manually.
+# To specify the type of a column simply append a colon and the type to the name so instead "display_order"
+# use "display_order:int". The csvloader does the following type conversions:
+#  * "int", "integer" -> Integer::parseInt
+#  * "long" -> Long::parseLong
+#  * "bool", "boolean" -> Boolean::parseBoolean
+#  * "real", "float" -> Float::parseFloat
+#  * "double" -> Double::parseDouble
+#  * "str", "string" -> s -> s
+# If no type is specified string is assumed.
+#
+# Note on primaryKey:
+# Knowing the primary key becomes necessary if the first column is not the primary key for the case where a file is
+# changed and the csvloader runs in "REFRESH" mode.
+#
+defaults:
+  # Default config for the tables in this set. Can be overridden pr table.
+
+  # If true the first line is a header and the loader will try to guess column names from this
+  # If false "columns" is mandatory for every table
+  csvheader: true
+
+  # An empty value (ie. the empty string) is interpreted as null
+  emptyIsNull: true
+
+  # These values are also recognized and set to null on insert
+  otherNullValues: ["null", "<null>"]
+
+tables:
+
+  - table: iot_event_type
+    file: ioteventtypecodes.csv
+
+  - table: iot_event_code
+    file: iottypecodes.csv
+
