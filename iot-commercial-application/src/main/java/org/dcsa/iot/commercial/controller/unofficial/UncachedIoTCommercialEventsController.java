@@ -1,15 +1,13 @@
 package org.dcsa.iot.commercial.controller.unofficial;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.dcsa.iot.commercial.service.IoTCommercialEventService;
+import org.dcsa.iot.commercial.service.unofficial.IoTCommercialDomainEventService;
 import org.dcsa.iot.commercial.service.domain.IoTCommercialDomainEvent;
+import org.dcsa.iot.commercial.transferobjects.IoTCommercialEventTO;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,17 +20,23 @@ import java.util.UUID;
 @RequestMapping("${spring.application.context-path}/unofficial/uncached-domain")
 @RequiredArgsConstructor
 public class UncachedIoTCommercialEventsController {
-  private final IoTCommercialEventService ioTCommercialEventService;
+  private final IoTCommercialDomainEventService ioTCommercialDomainEventService;
 
   @GetMapping(path = "/events/{eventID}")
   @ResponseStatus(HttpStatus.OK)
   public IoTCommercialDomainEvent findEvent(@PathVariable("eventID") UUID eventID) {
-    return ioTCommercialEventService.findDomainEvent(eventID);
+    return ioTCommercialDomainEventService.findDomainEvent(eventID);
   }
 
   @GetMapping(path = "/events")
   @ResponseStatus(HttpStatus.OK)
   public List<IoTCommercialDomainEvent> findEvents() {
-    return ioTCommercialEventService.findDomainEvents();
+    return ioTCommercialDomainEventService.findDomainEvents();
+  }
+
+  @PostMapping(path = "/events")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void createEvents(@Valid @RequestBody IoTCommercialEventTO ioTCommercialEventTO) {
+   ioTCommercialDomainEventService.createEvent(ioTCommercialEventTO);
   }
 }

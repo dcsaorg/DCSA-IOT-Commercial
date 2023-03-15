@@ -13,6 +13,7 @@ import org.dcsa.iot.commercial.domain.persistence.repository.EventCacheQueueDead
 import org.dcsa.iot.commercial.domain.persistence.repository.EventCacheQueueRepository;
 import org.dcsa.iot.commercial.domain.persistence.repository.EventCacheRepository;
 import org.dcsa.iot.commercial.service.domain.IoTCommercialDomainEvent;
+import org.dcsa.iot.commercial.service.unofficial.IoTCommercialDomainEventService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -29,7 +30,7 @@ public class EventCachingService {
   private int maxQueueResults = 100;
 
   private final TransactionTemplate transactionTemplate;
-  private final IoTCommercialEventService ioTCommercialEventService;
+  private final IoTCommercialDomainEventService ioTCommercialDomainEventService;
   private final ObjectMapper objectMapper;
 
   private final EventCacheRepository eventCacheRepository;
@@ -54,7 +55,7 @@ public class EventCachingService {
     log.debug("Attempting to cache {}", event);
     try {
       eventCacheQueueRepository.findAndLockByEventID(event.getEventID()).ifPresent(lockedEventCacheQueue -> {
-        eventCacheRepository.save(buildEventCache(ioTCommercialEventService.findDomainEvent(event.getEventID())));
+        eventCacheRepository.save(buildEventCache(ioTCommercialDomainEventService.findDomainEvent(event.getEventID())));
         eventCacheQueueRepository.delete(lockedEventCacheQueue);
       });
     } catch (PessimisticLockException e) {
