@@ -7,6 +7,8 @@ import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.dcsa.iot.commercial.domain.persistence.entity.EventSubscription_;
 import org.dcsa.iot.commercial.service.EventSubscriptionService;
+import org.dcsa.iot.commercial.transferobjects.EventSubscriptionSecretTO;
+import org.dcsa.iot.commercial.transferobjects.EventSubscriptionTO;
 import org.dcsa.iot.commercial.transferobjects.EventSubscriptionWithIdTO;
 import org.dcsa.iot.commercial.transferobjects.EventSubscriptionWithSecretTO;
 import org.dcsa.skernel.infrastructure.pagination.Pagination;
@@ -70,11 +72,14 @@ public class EventSubscriptionController {
     eventSubscriptionService.deleteSubscription(subscriptionID);
   }
 
-  @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
+  @ResponseStatus(HttpStatus.OK)
   @PutMapping(path = "/event-subscriptions/{subscriptionID}")
-  public void updateSubscription() {}
-
-  @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
+  public void updateSubscription(@PathVariable("subscriptionID") UUID subscriptionID, @Valid @RequestBody EventSubscriptionTO eventSubscription) {
+    eventSubscriptionService.updateSubscription(subscriptionID, eventSubscription);
+  }
+  @ResponseStatus(HttpStatus.NO_CONTENT)
   @PutMapping(path = "/event-subscriptions/{subscriptionID}/secret")
-  public void updateSecret() {}
+  public void updateSecret(@PathVariable("subscriptionID") UUID subscriptionID, @Valid @RequestBody EventSubscriptionSecretTO eventSubscriptionSecret) {
+    eventSubscriptionService.updateSecret(subscriptionID, eventSubscriptionSecret);
+  }
 }

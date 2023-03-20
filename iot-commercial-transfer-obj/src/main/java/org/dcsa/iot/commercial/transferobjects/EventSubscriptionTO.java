@@ -16,13 +16,11 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 public class EventSubscriptionTO {
   @NotBlank private String callbackUrl;
-
   @Size(max = 100)
   private String carrierBookingReference;
-
   @Size(max = 11)
   private String equipmentReference;
-
+  private OffsetDateTime subscriptionCreatedDateTime;
   private OffsetDateTime subscriptionUpdatedDateTime;
   private IoTEventTypeCode ioTEventTypeCode;
 }
