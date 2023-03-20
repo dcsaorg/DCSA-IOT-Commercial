@@ -23,7 +23,6 @@ public class EventSubscriptionTO {
   @Size(max = 11)
   private String equipmentReference;
 
-  private OffsetDateTime subscriptionCreatedDateTime;
   private OffsetDateTime subscriptionUpdatedDateTime;
   private IoTEventTypeCode ioTEventTypeCode;
 }

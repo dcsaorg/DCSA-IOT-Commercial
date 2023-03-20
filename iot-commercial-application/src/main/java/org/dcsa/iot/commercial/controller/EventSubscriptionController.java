@@ -2,11 +2,13 @@ package org.dcsa.iot.commercial.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.dcsa.iot.commercial.domain.persistence.entity.EventSubscription_;
 import org.dcsa.iot.commercial.service.EventSubscriptionService;
 import org.dcsa.iot.commercial.transferobjects.EventSubscriptionWithIdTO;
+import org.dcsa.iot.commercial.transferobjects.EventSubscriptionWithSecretTO;
 import org.dcsa.skernel.infrastructure.pagination.Pagination;
 import org.dcsa.skernel.infrastructure.sorting.Sorter;
 import org.springframework.data.domain.Sort;
@@ -56,9 +58,11 @@ public class EventSubscriptionController {
     return eventSubscriptionService.getSubscription(subscriptionID);
   }
 
-  @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
+  @ResponseStatus(HttpStatus.CREATED)
   @PostMapping(path = "/event-subscriptions")
-  public void createSubscription() {}
+  public EventSubscriptionWithIdTO createSubscription(@Valid @RequestBody EventSubscriptionWithSecretTO eventSubscription) {
+    return eventSubscriptionService.createSubscription(eventSubscription);
+  }
 
   @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
   @DeleteMapping(path = "/event-subscriptions/{subscriptionID}")

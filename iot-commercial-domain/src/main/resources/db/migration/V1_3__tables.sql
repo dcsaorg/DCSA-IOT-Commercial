@@ -36,7 +36,7 @@ CREATE TABLE event_subscription (
     iot_event_type_code varchar(4) NOT NULL REFERENCES iot_event_type(iot_event_type_code),
     secret bytea NOT NULL,
     created_date_time timestamp with time zone NOT NULL default now(),
-    updated_date_time timestamp with time zone NOT NULL default now()
+    updated_date_time timestamp with time zone default now()
 );
 
 
