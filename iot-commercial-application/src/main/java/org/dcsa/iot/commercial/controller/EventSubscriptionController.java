@@ -64,9 +64,11 @@ public class EventSubscriptionController {
     return eventSubscriptionService.createSubscription(eventSubscription);
   }
 
-  @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
+  @ResponseStatus(HttpStatus.NO_CONTENT)
   @DeleteMapping(path = "/event-subscriptions/{subscriptionID}")
-  public void deleteSubscription() {}
+  public void deleteSubscription(@PathVariable("subscriptionID") UUID subscriptionID) {
+    eventSubscriptionService.deleteSubscription(subscriptionID);
+  }
 
   @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
   @PutMapping(path = "/event-subscriptions/{subscriptionID}")

@@ -50,4 +50,9 @@ public class EventSubscriptionService {
     UUID subscriptionID = eventSubscription.getSubscriptionID();
     return getSubscription(subscriptionID);
   }
+
+  @Transactional
+  public void deleteSubscription(UUID subscriptionID) {
+    eventSubscriptionRepository.deleteById(subscriptionID);
+  }
 }

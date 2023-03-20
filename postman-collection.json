@@ -885,6 +885,148 @@
 							}
 						}
 					]
+				},
+				{
+					"name": "Test: create EventSubscriptionWithSecretTO  and delete it",
+					"item": [
+						{
+							"name": "create single EventSubscriptionWithSecretTO",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const schema = pm.collectionVariables.get(\"EVENT_SUBSCRIPTIONS_SCHEMA\");\r",
+											"const schemaObject = JSON.parse(schema).items;\r",
+											"\r",
+											"const parsedBody = pm.response.json();\r",
+											"pm.collectionVariables.set(\"SUBSCRIPTION_ID\", parsedBody.subscriptionID);\r",
+											"\r",
+											"pm.test(\"Status code is 201\", () => {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"pm.test('Schema is valid', () => {\r",
+											"    pm.response.to.have.jsonSchema(schemaObject);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"callbackUrl\": \"http://test.me/event-subscription-callback-url\",\r\n    \"carrierBookingReference\": \"test-carRef\",\r\n    \"equipmentReference\": \"test-eqRef\",\r\n    \"ioTEventTypeCode\":\"DETC\",\r\n    \"secret\": \"AmVyeSBzZWNyZXQgc2VjcmV0IHRoYXQgaXMgc28gc2VjcmV0\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/event-subscriptions",
+									"host": [
+										"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+									],
+									"path": [
+										"event-subscriptions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update EventSubscriptionWithSecretTO",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const SUBSCRIPTION_ID = pm.collectionVariables.get(\"SUBSCRIPTION_ID\");\r",
+											"\r",
+											"pm.test(\"Status code is 204\", () => {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/event-subscriptions/{{SUBSCRIPTION_ID}}",
+									"host": [
+										"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+									],
+									"path": [
+										"event-subscriptions",
+										"{{SUBSCRIPTION_ID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get created EventSubscriptionWithSecretTO",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const SUBSCRIPTION_ID = pm.collectionVariables.get(\"SUBSCRIPTION_ID\");\r",
+											"\r",
+											"\r",
+											"pm.test(\"Status code is 404\", () => {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"\r",
+											"pm.collectionVariables.unset(\"SUBSCRIPTION_ID\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/event-subscriptions/{{SUBSCRIPTION_ID}}",
+									"host": [
+										"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+									],
+									"path": [
+										"event-subscriptions",
+										"{{SUBSCRIPTION_ID}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
 				}
 			],
 			"event": [
