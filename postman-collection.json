@@ -194,8 +194,9 @@
 											"});\r",
 											"pm.test(\"response body longer than 2\", () => {\r",
 											"    const jsonData = pm.response.json();\r",
-											"        pm.expect(jsonData.length).to.gt(0);\r",
-											"});"
+											"        pm.expect(jsonData.length).to.gt(2);\r",
+											"});\r",
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -618,6 +619,766 @@
 					}
 				}
 			]
+		},
+		{
+			"name": "Post EventSubscription",
+			"item": [
+				{
+					"name": "Test: create EventSubscriptionWithSecretTO and retrieve it",
+					"item": [
+						{
+							"name": "create single EventSubscriptionWithSecretTO",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const schema = pm.collectionVariables.get(\"EVENT_SUBSCRIPTIONS_SCHEMA\");\r",
+											"const schemaObject = JSON.parse(schema).items;\r",
+											"\r",
+											"const parsedBody = pm.response.json();\r",
+											"pm.collectionVariables.set(\"SUBSCRIPTION_ID\", parsedBody.subscriptionID);\r",
+											"\r",
+											"pm.request.body.raw[\"secret\"] // delete secret before setting to compare in NEXT TEST\r",
+											"pm.collectionVariables.set(\"POST_BODY\", pm.request.body.raw) // set body\r",
+											"\r",
+											"\r",
+											"pm.test(\"Status code is 201\", () => {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"pm.test('Schema is valid', () => {\r",
+											"    pm.response.to.have.jsonSchema(schemaObject);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"callbackUrl\": \"http://test.me/event-subscription-callback-url\",\r\n    \"carrierBookingReference\": \"test-carRef\",\r\n    \"equipmentReference\": \"test-eqRef\",\r\n    \"ioTEventTypeCode\":\"DETC\",\r\n    \"secret\": \"dmVyeSBzZWNyZXQgc2VjcmV0IHRoYXQgaXMgc28gc2VjcmV0\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/event-subscriptions",
+									"host": [
+										"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+									],
+									"path": [
+										"event-subscriptions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get created EventSubscriptionWithSecretTO",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const SUBSCRIPTION_ID = pm.collectionVariables.get(\"SUBSCRIPTION_ID\");\r",
+											"const postRequestBodyRaw = pm.collectionVariables.get(\"POST_BODY\");\r",
+											"const schema = pm.collectionVariables.get(\"EVENT_SUBSCRIPTIONS_SCHEMA\");\r",
+											"const schemaObject = JSON.parse(schema).items;\r",
+											"\r",
+											"pm.test('Schema is valid', () => {\r",
+											"    pm.response.to.have.jsonSchema(schemaObject);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Status code is 200\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response body SubscriptionID matches query parameter \", () => {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.subscriptionID).to.eql(SUBSCRIPTION_ID);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Response matches posted EventSubscriptionWithSecretTO\", () => {\r",
+											"    const jsonData = JSON.sort(pm.response.json());\r",
+											"    const postRequestBody = JSON.sort(JSON.parse(postRequestBodyRaw));\r",
+											"     delete postRequestBody[\"secret\"];\r",
+											"     delete jsonData[\"subscriptionID\"];\r",
+											"     delete jsonData[\"subscriptionCreatedDateTime\"];\r",
+											"    pm.expect(jsonData).to.eql(postRequestBody);\r",
+											"});\r",
+											"pm.collectionVariables.unset(\"POST_BODY\");\r",
+											"pm.collectionVariables.unset(\"SUBSCRIPTION_ID\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/event-subscriptions/{{SUBSCRIPTION_ID}}",
+									"host": [
+										"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+									],
+									"path": [
+										"event-subscriptions",
+										"{{SUBSCRIPTION_ID}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Test: create EventSubscriptionWithSecretTO and retrieve list",
+					"item": [
+						{
+							"name": "create single EventSubscriptionWithSecretTO",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const schema = pm.collectionVariables.get(\"EVENT_SUBSCRIPTIONS_SCHEMA\");\r",
+											"const schemaObject = JSON.parse(schema).items;\r",
+											"\r",
+											"const parsedBody = pm.response.json();\r",
+											"pm.collectionVariables.set(\"SUBSCRIPTION_ID\", parsedBody.subscriptionID);\r",
+											"\r",
+											"pm.request.body.raw[\"secret\"] // delete secret before setting to compare in NEXT TEST\r",
+											"pm.collectionVariables.set(\"POST_BODY\", pm.request.body.raw) // set body\r",
+											"\r",
+											"\r",
+											"pm.test(\"Status code is 201\", () => {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"pm.test('Schema is valid', () => {\r",
+											"    pm.response.to.have.jsonSchema(schemaObject);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"subscriptionCreatedDateTime\":\"2021-09-19T04:31:00Z\",\r\n    \"subscriptionUpdatedDateTime\":\"2021-09-19T04:31:00Z\",\r\n    \"callbackUrl\": \"http://test.me/event-subscription-callback-url\",\r\n    \"carrierBookingReference\": \"test-carRef\",\r\n    \"equipmentReference\": \"test-eqRef\",\r\n    \"ioTEventTypeCode\":\"DETC\",\r\n    \"secret\": \"AmVyeSBzZWNyZXQgc2VjcmV0IHRoYXQgaXMgc28gc2VjcmV0\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/event-subscriptions",
+									"host": [
+										"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+									],
+									"path": [
+										"event-subscriptions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get created EventSubscriptionWithSecretTO",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const SUBSCRIPTION_ID = pm.collectionVariables.get(\"SUBSCRIPTION_ID\");\r",
+											"const postRequestBodyRaw = pm.collectionVariables.get(\"POST_BODY\");\r",
+											"const schema = pm.collectionVariables.get(\"EVENT_SUBSCRIPTIONS_SCHEMA\");\r",
+											"const schemaObject = JSON.parse(schema).items;\r",
+											"\r",
+											"pm.test(\"Status code is 200\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test('Schema is valid', () => {\r",
+											"    const jsonData = pm.response.json();\r",
+											"      jsonData.map((item) =>{\r",
+											"          pm.expect(item).to.have.jsonSchema(schemaObject);\r",
+											"          });\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"SUBSCRIPTION_ID exits in list of event subscriptions\", () => {\r",
+											"  const jsonData = pm.response.json();\r",
+											"  const dr = jsonData.map(item => item.subscriptionID);\r",
+											"  pm.expect(dr).to.include(SUBSCRIPTION_ID);\r",
+											"\r",
+											"});\r",
+											"\r",
+											"pm.collectionVariables.unset(\"POST_BODY\");\r",
+											"pm.collectionVariables.unset(\"SUBSCRIPTION_ID\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/event-subscriptions",
+									"host": [
+										"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+									],
+									"path": [
+										"event-subscriptions"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Test: create EventSubscriptionWithSecretTO  and delete it",
+					"item": [
+						{
+							"name": "create single EventSubscriptionWithSecretTO",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const schema = pm.collectionVariables.get(\"EVENT_SUBSCRIPTIONS_SCHEMA\");\r",
+											"const schemaObject = JSON.parse(schema).items;\r",
+											"\r",
+											"const parsedBody = pm.response.json();\r",
+											"pm.collectionVariables.set(\"SUBSCRIPTION_ID\", parsedBody.subscriptionID);\r",
+											"\r",
+											"pm.test(\"Status code is 201\", () => {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"pm.test('Schema is valid', () => {\r",
+											"    pm.response.to.have.jsonSchema(schemaObject);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"callbackUrl\": \"http://test.me/event-subscription-callback-url\",\r\n    \"carrierBookingReference\": \"test-carRef\",\r\n    \"equipmentReference\": \"test-eqRef\",\r\n    \"ioTEventTypeCode\":\"DETC\",\r\n    \"secret\": \"AmVyeSBzZWNyZXQgc2VjcmV0IHRoYXQgaXMgc28gc2VjcmV0\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/event-subscriptions",
+									"host": [
+										"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+									],
+									"path": [
+										"event-subscriptions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update EventSubscriptionWithSecretTO",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const SUBSCRIPTION_ID = pm.collectionVariables.get(\"SUBSCRIPTION_ID\");\r",
+											"\r",
+											"pm.test(\"Status code is 204\", () => {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/event-subscriptions/{{SUBSCRIPTION_ID}}",
+									"host": [
+										"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+									],
+									"path": [
+										"event-subscriptions",
+										"{{SUBSCRIPTION_ID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get created EventSubscriptionWithSecretTO",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const SUBSCRIPTION_ID = pm.collectionVariables.get(\"SUBSCRIPTION_ID\");\r",
+											"\r",
+											"\r",
+											"pm.test(\"Status code is 404\", () => {\r",
+											"    pm.response.to.have.status(404);\r",
+											"});\r",
+											"\r",
+											"pm.collectionVariables.unset(\"SUBSCRIPTION_ID\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/event-subscriptions/{{SUBSCRIPTION_ID}}",
+									"host": [
+										"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+									],
+									"path": [
+										"event-subscriptions",
+										"{{SUBSCRIPTION_ID}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Test: create ESWithSecretTO, update and retrieve it",
+					"item": [
+						{
+							"name": "create single EventSubscriptionWithSecretTO",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const schema = pm.collectionVariables.get(\"EVENT_SUBSCRIPTIONS_SCHEMA\");\r",
+											"const schemaObject = JSON.parse(schema).items;\r",
+											"\r",
+											"const parsedBody = pm.response.json();\r",
+											"pm.collectionVariables.set(\"SUBSCRIPTION_ID\", parsedBody.subscriptionID);\r",
+											"\r",
+											"pm.request.body.raw[\"secret\"] // delete secret before setting to compare in NEXT TEST\r",
+											"pm.collectionVariables.set(\"POST_BODY\", pm.request.body.raw) // set body\r",
+											"\r",
+											"\r",
+											"pm.test(\"Status code is 201\", () => {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"pm.test('Schema is valid', () => {\r",
+											"    pm.response.to.have.jsonSchema(schemaObject);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"subscriptionCreatedDateTime\":\"2021-09-19T04:31:00Z\",\r\n    \"subscriptionUpdatedDateTime\":\"2021-09-19T04:31:00Z\",\r\n    \"callbackUrl\": \"http://test.me/event-subscription-callback-url\",\r\n    \"carrierBookingReference\": \"test-carRef\",\r\n    \"equipmentReference\": \"test-eqRef\",\r\n    \"ioTEventTypeCode\":\"DETC\",\r\n    \"secret\": \"AmVyeSBzZWNyZXQgc2VjcmV0IHRoYXQgaXMgc28gc2VjcmV0\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/event-subscriptions",
+									"host": [
+										"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+									],
+									"path": [
+										"event-subscriptions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update EventSubscriptionWithSecretTO",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const SUBSCRIPTION_ID = pm.collectionVariables.get(\"SUBSCRIPTION_ID\");\r",
+											"\r",
+											"\r",
+											"pm.request.body.raw[\"secret\"] // delete secret before setting to compare in NEXT TEST\r",
+											"pm.collectionVariables.set(\"POST_BODY\", pm.request.body.raw) // set body\r",
+											"\r",
+											"pm.test(\"Status code is 200\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"callbackUrl\": \"http://test.me/event-subscription-callback-updated\",\r\n    \"carrierBookingReference\": \"test-carRef\",\r\n    \"equipmentReference\": \"test-eqRef\",\r\n    \"ioTEventTypeCode\":\"DETC\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/event-subscriptions/{{SUBSCRIPTION_ID}}",
+									"host": [
+										"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+									],
+									"path": [
+										"event-subscriptions",
+										"{{SUBSCRIPTION_ID}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get created EventSubscriptionWithSecretTO",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const SUBSCRIPTION_ID = pm.collectionVariables.get(\"SUBSCRIPTION_ID\");\r",
+											"const postRequestBodyRaw = pm.collectionVariables.get(\"POST_BODY\");\r",
+											"const schema = pm.collectionVariables.get(\"EVENT_SUBSCRIPTIONS_SCHEMA\");\r",
+											"const schemaObject = JSON.parse(schema).items;\r",
+											"\r",
+											"\r",
+											"pm.test('Schema is valid', () => {\r",
+											"    pm.response.to.have.jsonSchema(schemaObject);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Status code is 200\", () => {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"pm.test(\"Response body SubscriptionID matches query parameter \", () => {\r",
+											"    const jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.subscriptionID).to.eql(SUBSCRIPTION_ID);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Response matches posted EventSubscriptionWithSecretTO\", () => {\r",
+											"    const jsonData = JSON.sort(pm.response.json());\r",
+											"    const postRequestBody = JSON.sort(JSON.parse(postRequestBodyRaw));\r",
+											"     delete postRequestBody[\"secret\"];\r",
+											"     delete jsonData[\"subscriptionID\"];\r",
+											"     delete jsonData[\"subscriptionUpdatedDateTime\"];\r",
+											"     delete jsonData[\"subscriptionCreatedDateTime\"];\r",
+											"   const isEqual = _.isEqual(jsonData, postRequestBody);\r",
+											"    pm.expect(isEqual).to.be.true;\r",
+											"});\r",
+											"pm.collectionVariables.unset(\"POST_BODY\");\r",
+											"pm.collectionVariables.unset(\"SUBSCRIPTION_ID\");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/event-subscriptions/{{SUBSCRIPTION_ID}}",
+									"host": [
+										"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+									],
+									"path": [
+										"event-subscriptions",
+										"{{SUBSCRIPTION_ID}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Test: create ESWithSecretTO, update secret",
+					"item": [
+						{
+							"name": "create single EventSubscriptionWithSecretTO",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const schema = pm.collectionVariables.get(\"EVENT_SUBSCRIPTIONS_SCHEMA\");\r",
+											"const schemaObject = JSON.parse(schema).items;\r",
+											"\r",
+											"const parsedBody = pm.response.json();\r",
+											"pm.collectionVariables.set(\"SUBSCRIPTION_ID\", parsedBody.subscriptionID);\r",
+											"\r",
+											"pm.request.body.raw[\"secret\"] // delete secret before setting to compare in NEXT TEST\r",
+											"pm.collectionVariables.set(\"POST_BODY\", pm.request.body.raw) // set body\r",
+											"\r",
+											"\r",
+											"pm.test(\"Status code is 201\", () => {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"pm.test('Schema is valid', () => {\r",
+											"    pm.response.to.have.jsonSchema(schemaObject);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"subscriptionCreatedDateTime\":\"2021-09-19T04:31:00Z\",\r\n    \"subscriptionUpdatedDateTime\":\"2021-09-19T04:31:00Z\",\r\n    \"callbackUrl\": \"http://test.me/event-subscription-callback-url\",\r\n    \"carrierBookingReference\": \"test-carRef\",\r\n    \"equipmentReference\": \"test-eqRef\",\r\n    \"ioTEventTypeCode\":\"DETC\",\r\n    \"secret\": \"AmVyeSBzZWNyZXQgc2VjcmV0IHRoYXQgaXMgc28gc2VjcmV0\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/event-subscriptions",
+									"host": [
+										"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+									],
+									"path": [
+										"event-subscriptions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update EventSubscriptionWith Secret body",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const SUBSCRIPTION_ID = pm.collectionVariables.get(\"SUBSCRIPTION_ID\");\r",
+											"\r",
+											"pm.collectionVariables.set(\"POST_BODY\", pm.request.body.raw) // set body\r",
+											"\r",
+											"pm.test(\"Status code is 204\", () => {\r",
+											"    pm.response.to.have.status(204);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"secret\":\"YW5vdGhlciBzZWNyZXQgLSBub3QgdGhlIHNhbWUgYXMgYmVmb3Jl\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/event-subscriptions/{{SUBSCRIPTION_ID}}/secret",
+									"host": [
+										"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+									],
+									"path": [
+										"event-subscriptions",
+										"{{SUBSCRIPTION_ID}}",
+										"secret"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"API-Version is present\", () => {",
+							"    pm.response.to.have.header(\"API-Version\");",
+							"});",
+							"",
+							"// Helper functions for removing empty/nulls from json - This function is used with deep equal comp as API does not return null keys",
+							"JSON.cleanObject = obj =>",
+							"  _.transform(obj, (acc, v, k) => {",
+							"    const val = _.isObject(v) ? cleanObject(v) : v // if current value is an object clean it",
+							"    ",
+							"    if(_.isEmpty(val)) return // ignore null, undefined, or empty objects / arrays",
+							"    ",
+							"    acc[k] = val // assign to key",
+							"  })",
+							"",
+							"function isObject(v) {",
+							"    return '[object Object]' === Object.prototype.toString.call(v);",
+							"};",
+							"",
+							"// Helper functions for sorting deep json for comparison - This function is used with deep equal comp as order of list fails comparison",
+							"JSON.sort = function(o) {",
+							"if (Array.isArray(o)) {",
+							"        return o.sort().map(JSON.sort);",
+							"    } else if (isObject(o)) {",
+							"        return Object",
+							"            .keys(o)",
+							"        .sort()",
+							"            .reduce(function(a, k) {",
+							"                a[k] = JSON.sort(o[k]);",
+							"",
+							"                return a;",
+							"            }, {});",
+							"    }",
+							"",
+							"    return o;",
+							"}"
+						]
+					}
+				}
+			]
 		}
 	],
 	"event": [
@@ -665,6 +1426,19 @@
 			"key": "IoT_EVENT_SCHEMA",
 			"value": "{\n    \"type\": \"array\",\n    \"items\": {\n      \"required\": [\n        \"metadata\"\n      ],\n      \"type\": \"object\",\n      \"description\": \"The `IoTEvent` is a specialized event to handle all events related to IoT readings.\\n\",\n      \"properties\": {\n        \"metadata\": {\n          \"description\": \"The `metadata` of the `IoTEvent` - includes all non-business related attributes\\n\",\n          \"required\": [\n            \"eventCreatedDateTime\",\n            \"eventID\",\n            \"publisher\",\n            \"publisherRole\"\n          ],\n          \"type\": \"object\",\n          \"properties\": {\n            \"eventID\": {\n              \"type\": \"string\",\n              \"description\": \"The unique identifier for this event (*the message - not the source*).\\n\",\n              \"format\": \"uuid\"\n            },\n            \"eventCreatedDateTime\": {\n              \"type\": \"string\",\n              \"description\": \"The timestamp of when the event was created.\\n\"            \n            },\n            \"retractedEventID\": {\n              \"maxLength\": 100,\n              \"type\": \"string\",\n              \"description\": \"Reference to an Event that is to be retracted. If provided, the payload of the event **MUST not** be included.\\n\"\n            },\n            \"publisher\": {\n              \"required\": [\n                \"carrierCode\",\n                \"carrierCodeListProvider\"\n              ],\n              \"type\": \"object\",\n              \"description\": \"The party sending the event\\n\",\n              \"properties\": {\n                \"partyName\": {\n                  \"maxLength\": 100,\n                  \"pattern\": \"^\\\\S+(\\\\s+\\\\S+)*$\",\n                  \"type\": \"string\",\n                  \"description\": \"Name of the party.\\n\"\n                },\n                \"carrierCode\": {\n                  \"maxLength\": 4,\n                  \"pattern\": \"^\\\\S+(\\\\s+\\\\S+)*$\",\n                  \"type\": \"string\",\n                  \"description\": \"The code containing the SCAC and/or the SMDG code to specify the issuing carrier.  Details about the issuer can be given in the Document Parties entity using the party function code MS.\\n\"\n                },\n                \"carrierCodeListProvider\": {\n                  \"type\": \"string\",\n                  \"description\": \"The provider used for identifying the issuer Code. Possible values are:\\n- SMDG (Ship Message Design Group)\\n- NMFTA (National Motor Freight Traffic Association) _includes SPLC (Standard Point Location Code)_\\n\",\n                  \"enum\": [\n                    \"SMDG\",\n                    \"NMFTA\"\n                  ]\n                }\n              }\n            },\n            \"publisherRole\": {\n              \"type\": \"string\",\n              \"description\": \"The party function code of the publisher. The values are divided into 2 categories:\\n\\n#### Carrier\\n- CA (Carrier)\\n- AG (Carrier local agent)\\n\\n#### Service Provider\\n- VSP (Visibility Service Provider)\\n- SVP (Any other service provider)\\n\\nMore details can be found on <a href=\\\"https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/publisherrole.csv\\\">GitHub</a>\\n\",\n              \"enum\": [\n                \"CA\",\n                \"AG\",\n                \"VSP\",\n                \"SVP\"\n              ]\n            },\n            \"eventType\": {\n              \"type\": \"string\",\n              \"description\": \"The type of the Event - in this API it can only be IoT\\n\\n- IOT (An IoT event)\\n\",\n              \"enum\": [\n                \"IOT\"\n              ]\n            }\n          }\n        },\n        \"payload\": {\n          \"description\": \"The business attributes related to the `IoTEvent`.\\n\\nThis is a conditional object - if `retractedEventID` is **not** provided in the `metadata` then this object is mandatory\\n\",\n          \"required\": [\n            \"equipmentReference\",\n            \"eventClassifierCode\",\n            \"eventDateTime\",\n            \"iotEventCode\",\n            \"iotEventTypeCode\"\n          ],\n          \"type\": \"object\",\n          \"properties\": {\n            \"eventClassifierCode\": {\n              \"type\": \"string\",\n              \"description\": \"Code for the event classifier. Values can vary depending on eventType\\n\",\n              \"enum\": [\n                \"ACT\"\n              ]\n            },\n            \"eventDateTime\": {\n              \"type\": \"string\",\n              \"description\": \"The local date and time, when the event took place or when the event will take place, in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.\\n\"\n            },\n            \"iotEventTypeCode\": {\n              \"type\": \"string\",\n              \"description\": \"Unique identifier for `iotEventTypeCode` - can be one of the following values\\n- DETC (Detected)\\n\\nMore details can be found on <a href=\\\"https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/ioteventtypecodes.csv\\\">GitHub</a>\\n\",\n              \"enum\": [\n                \"DETC\"\n              ]\n            },\n            \"iotEventCode\": {\n              \"maxLength\": 3,\n              \"type\": \"string\",\n              \"description\": \"The `iotTypeCode` is used to identify the type of `IotEvent`. Can be one of the following values\\n- DRO (Door Opened)\\n\\nMore details can be found on [GitHub](https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/iottypecodes.csv)\\n\",\n              \"enum\": [\n                \"DRO\"\n              ]\n            },\n            \"geoLocation\": {\n              \"required\": [\n                \"latitude\",\n                \"longitude\"\n              ],\n              \"type\": \"object\",\n              \"description\": \"An interface used to express a location using `latitude` and `longitude`\\n\",\n              \"properties\": {\n                \"locationName\": {\n                  \"maxLength\": 100,\n                  \"type\": \"string\",\n                  \"description\": \"The name of the location.\"\n                },\n                \"latitude\": {\n                  \"maxLength\": 10,\n                  \"type\": \"string\",\n                  \"description\": \"Geographic coordinate that specifies the northÔÇôsouth position of a point on the Earth&apos;s surface.\"\n                },\n                \"longitude\": {\n                  \"maxLength\": 11,\n                  \"type\": \"string\",\n                  \"description\": \"Geographic coordinate that specifies the eastÔÇôwest position of a point on the Earth&apos;s surface.\"\n                }\n              }\n            },\n            \"equipmentReference\": {\n              \"maxLength\": 11,\n              \"pattern\": \"^\\\\S+(\\\\s+\\\\S+)*$\",\n              \"type\": \"string\",\n              \"description\": \"The unique identifier for the equipment, which should follow the BIC ISO Container Identification Number where possible.\\nAccording to ISO 6346, a container identification code consists of a 4-letter prefix and a 7-digit number (composed of a 3-letter owner code, a category identifier, a serial number, and a check-digit).\\n\\nIf a container does not comply with ISO 6346, it is suggested to follow [Recommendation #2: Containers with non-ISO identification](https://smdg.org/documents/smdg-recommendations) from SMDG.\\n\"\n            },\n            \"relatedDocumentReferences\": {\n              \"type\": \"array\",\n              \"description\": \"An optional list of key-value (`type`-`value`) pairs representing links to objects relevant to the event. The `type`-field is used to describe where the `value`-field is pointing to.\\n\",\n              \"items\": {\n                \"type\": \"object\",\n                \"properties\": {\n                  \"type\": {\n                    \"type\": \"string\",\n                    \"description\": \"Describes where the `value` is pointing to. Can be one of the following values\\n- CBR (Carrier Booking Request Reference)\\n- BKG (Carrier Booking Reference)\\n- SHI (Shipping Instruction Reference)\\n- TRD (Transport Document Reference)\\n\",\n                    \"enum\": [\n                      \"CBR\",\n                      \"BKG\",\n                      \"SHI\",\n                      \"TRD\"\n                    ]\n                  },\n                  \"value\": {\n                    \"maxLength\": 100,\n                    \"type\": \"string\",\n                    \"description\": \"The reference to the object described by `type`\\n\"\n                  }\n                }\n              }\n            }\n          }\n        }\n      }\n    } \n  }",
 			"type": "string"
+		},
+		{
+			"key": "EVENT_SUBSCRIPTIONS_SCHEMA",
+			"value": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"required\": [\n      \"callbackUrl\"\n    ],\n    \"properties\": {\n      \"subscriptionID\": {\n        \"type\": \"string\",\n        \"description\": \"The carrier issues a unique ID to the shipper or consignee for that subscription\\n\"\n      },\n      \"subscriptionCreatedDateTime\": {\n        \"type\": \"string\",\n        \"description\": \"The date and time when the subscription was created\\n\"\n      },\n      \"subscriptionUpdatedDateTime\": {\n        \"type\": \"string\",\n        \"description\": \"The date and time when the subscription was last updated\\n\"\n      },\n      \"callbackUrl\": {\n        \"type\": \"string\",\n        \"description\": \"The endPoint where a Carrier whould send back events to the Shipper. The callback can contain query parameters uniquely identifying the originator of the events.\\n\",\n        \"format\": \"uri\"\n      },\n      \"iotEventTypeCodes\": {\n        \"type\": \"array\",\n        \"description\": \"List of `iotEventTypeCode` to filter by. If multiple values are selected - the **OR**-operator will be used.\\n\\nDefault is none as it will not filter on `iotEventTypeCode` if not specified.\\n\",\n        \"items\": {\n          \"type\": \"string\",\n          \"description\": \"Unique identifier for `iotEventTypeCode` - can be one of the following values\\n- DETC (Detected)\\n\\nMore details can be found on <a href=\\\"https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/ioteventtypecodes.csv\\\">GitHub</a>\\n\",\n          \"enum\": [\n            \"DETC\"\n          ]\n        }\n      },\n      \"carrierBookingReference\": {\n        \"maxLength\": 100,\n        \"type\": \"string\",\n        \"description\": \"The reference to a Booking. Using this filter in a subscription will only return Events that are related to the `carrierBookingReference` specified\\n\"\n      },\n      \"equipmentReference\": {\n        \"maxLength\": 11,\n        \"pattern\": \"^\\\\S+(\\\\s+\\\\S+)*$\",\n        \"type\": \"string\",\n        \"description\": \"The unique identifier for the equipment, which should follow the BIC ISO Container Identification Number where possible.\\nAccording to ISO 6346, a container identification code consists of a 4-letter prefix and a 7-digit number (composed of a 3-letter owner code, a category identifier, a serial number, and a check-digit).\\n\\nIf a container does not comply with ISO 6346, it is suggested to follow [Recommendation #2: Containers with non-ISO identification](https://smdg.org/documents/smdg-recommendations) from SMDG.\\n\"\n      }\n    }\n  }\n}",
+			"type": "string"
+		},
+		{
+			"key": "SUBSCRIPTION_ID",
+			"value": ""
+		},
+		{
+			"key": "POST_BODY",
+			"value": ""
 		}
 	]
 }

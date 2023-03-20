@@ -28,6 +28,18 @@ CREATE TABLE document_reference (
     event_id uuid
 );
 
+CREATE TABLE event_subscription (
+    subscription_id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+    callback_url text NOT NULL,
+    carrier_booking_reference varchar(35) NULL,
+    equipment_reference varchar(11) NULL,
+    iot_event_type_code varchar(4) NOT NULL REFERENCES iot_event_type(iot_event_type_code),
+    secret bytea NOT NULL,
+    created_date_time timestamp with time zone NOT NULL default now(),
+    updated_date_time timestamp with time zone default now()
+);
+
+
 -- TRIGGER FOR CACHING event_cache_queue
 
 CREATE OR REPLACE FUNCTION queue_iot_event() RETURNS TRIGGER AS $$
@@ -40,3 +52,5 @@ $$ LANGUAGE 'plpgsql';
 DROP TRIGGER IF EXISTS queue_iot_events ON iot_commercial_event;
 CREATE TRIGGER queue_iot_events AFTER INSERT ON iot_commercial_event
     FOR EACH ROW EXECUTE PROCEDURE queue_iot_event();
+
+
