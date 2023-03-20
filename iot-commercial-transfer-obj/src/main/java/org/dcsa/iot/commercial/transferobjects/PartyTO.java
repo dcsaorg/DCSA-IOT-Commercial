@@ -2,6 +2,7 @@ package org.dcsa.iot.commercial.transferobjects;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import org.dcsa.iot.commercial.transferobjects.enums.CarrierCodeListProvider;
@@ -13,7 +14,7 @@ public record PartyTO(
   @NotBlank @Size(max = 4)
   String carrierCode,
 
-  @NotEmpty CarrierCodeListProvider carrierCodeListProvider
+  @NotNull CarrierCodeListProvider carrierCodeListProvider
 ) {
   @Builder(toBuilder = true)
   public PartyTO { }

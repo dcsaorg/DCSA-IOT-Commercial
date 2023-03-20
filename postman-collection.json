@@ -44,6 +44,136 @@
 			]
 		},
 		{
+			"name": "Create test data",
+			"item": [
+				{
+					"name": "load reference & sample data",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/unofficial/dataloader/load/reference,sample",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"unofficial",
+								"dataloader",
+								"load",
+								"reference,sample"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "load IoT event - all fields given",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n    \"metadata\": {\r\n      \"eventID\": \"84db923d-2a19-4eb0-beb5-446c1ec57d34\",\r\n      \"eventCreatedDateTime\": \"2022-09-19T06:31:00+02:00\",\r\n      \"eventType\": \"IOT\",\r\n      \"publisher\": {\r\n        \"partyName\": \"C\",\r\n        \"carrierCode\": \"YML\",\r\n        \"carrierCodeListProvider\": \"SMDG\"\r\n      },\r\n      \"publisherRole\": \"CA\"\r\n    },\r\n    \"payload\": {\r\n      \"eventClassifierCode\": \"ACT\",\r\n      \"eventDateTime\": \"2022-09-19T06:31:00+02:00\",\r\n      \"iotEventTypeCode\": \"DETC\",\r\n      \"iotEventCode\": \"DRO\",\r\n      \"geoLocation\": {\r\n        \"latitude\": 48.85855,\r\n        \"longitude\": 2.294492036\r\n      },\r\n      \"equipmentReference\": \"MSKU9070323\",\r\n      \"relatedDocumentReferences\": [\r\n        {\r\n          \"type\": \"BKG\",\r\n          \"value\": \"ABC123059\"\r\n        }\r\n      ]\r\n    }\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/unofficial/uncached-domain/events",
+							"host": [
+								"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+							],
+							"path": [
+								"unofficial",
+								"uncached-domain",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "load IoT event - all fields without geoLocation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n    \"metadata\": {\r\n      \"eventCreatedDateTime\": \"2021-09-19T06:31:00+02:00\",\r\n      \"eventType\": \"IOT\",\r\n      \"publisher\": {\r\n        \"partyName\": \"CAA\",\r\n        \"carrierCode\": \"YML\",\r\n        \"carrierCodeListProvider\": \"SMDG\"\r\n      },\r\n      \"publisherRole\": \"CA\"\r\n    },\r\n    \"payload\": {\r\n      \"eventClassifierCode\": \"ACT\",\r\n      \"eventDateTime\": \"2021-09-19T06:31:00+02:00\",\r\n      \"iotEventTypeCode\": \"DETC\",\r\n      \"iotEventCode\": \"DRO\",\r\n      \"equipmentReference\": \"APZU4812090\",\r\n      \"relatedDocumentReferences\": [\r\n        {\r\n          \"type\": \"BKG\",\r\n          \"value\": \"CBA123059\"\r\n        }\r\n      ]\r\n    }\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/unofficial/uncached-domain/events",
+							"host": [
+								"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+							],
+							"path": [
+								"unofficial",
+								"uncached-domain",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "load IoT event without document references",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n    \"metadata\": { \r\n      \"eventCreatedDateTime\": \"2022-09-19T06:31:00+02:00\",\r\n      \"eventType\": \"IOT\",\r\n      \"publisher\": {\r\n        \"partyName\": \"partyName\",\r\n        \"carrierCode\": \"YML\",\r\n        \"carrierCodeListProvider\": \"SMDG\"\r\n      },\r\n      \"publisherRole\": \"CA\"\r\n    },\r\n    \"payload\": {\r\n      \"eventClassifierCode\": \"ACT\",\r\n      \"eventDateTime\": \"2022-09-19T06:31:00+02:00\",\r\n      \"iotEventTypeCode\": \"DETC\",\r\n      \"iotEventCode\": \"DRO\",\r\n      \"geoLocation\": {\r\n        \"latitude\": 48.85855,\r\n        \"longitude\": 2.294492036\r\n      },\r\n      \"equipmentReference\": \"MSKU9070323\"\r\n      \r\n    }\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/unofficial/uncached-domain/events",
+							"host": [
+								"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+							],
+							"path": [
+								"unofficial",
+								"uncached-domain",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cache IoT events",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/unofficial/events-cache-trigger",
+							"host": [
+								"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+							],
+							"path": [
+								"unofficial",
+								"events-cache-trigger"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "This folder populates the refernce implementation with test data."
+		},
+		{
 			"name": "GET IoT events",
 			"item": [
 				{
@@ -56,18 +186,62 @@
 									"listen": "test",
 									"script": {
 										"exec": [
-											"/*\r",
-											"pm.test(\"Non-empty response\", () => {\r",
-											"    const jsonData = pm.response.json();\r",
-											"    // We have 1 IoT event atm\r",
-											"    pm.expect(jsonData.length).to.gt(0);\r",
-											"});\r",
-											"*/\r",
 											"const schema = pm.collectionVariables.get(\"IoT_EVENT_SCHEMA\");\r",
 											"const schemaObject = JSON.parse(schema);\r",
 											"\r",
 											"pm.test('Schema is valid', () => {\r",
 											"    pm.response.to.have.jsonSchema(schemaObject);\r",
+											"});\r",
+											"pm.test(\"response body longer than 2\", () => {\r",
+											"    const jsonData = pm.response.json();\r",
+											"        pm.expect(jsonData.length).to.gt(0);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/events",
+									"host": [
+										"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
+									],
+									"path": [
+										"events"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "With ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"const schema = pm.collectionVariables.get(\"IoT_EVENT_SCHEMA\");\r",
+											"const schemaObject = JSON.parse(schema);\r",
+											"\r",
+											"pm.test('Schema is valid', () => {\r",
+											"    pm.response.to.have.jsonSchema(schemaObject.items);\r",
+											"});\r",
+											"pm.test(\"Response matches query parameter eventID\", () => {\r",
+											"    const jsonData = pm.response.json();\r",
+											"      pm.expect(jsonData.metadata.eventID).to.equal(\"84db923d-2a19-4eb0-beb5-446c1ec57d34\")\r",
 											"});\r",
 											""
 										],
@@ -88,18 +262,13 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/events?limit=1",
+									"raw": "{{BASE_URL}}{{IoT_CONTEXT_PATH}}/events/84db923d-2a19-4eb0-beb5-446c1ec57d34",
 									"host": [
 										"{{BASE_URL}}{{IoT_CONTEXT_PATH}}"
 									],
 									"path": [
-										"events"
-									],
-									"query": [
-										{
-											"key": "limit",
-											"value": "1"
-										}
+										"events",
+										"84db923d-2a19-4eb0-beb5-446c1ec57d34"
 									]
 								}
 							},
@@ -119,12 +288,11 @@
 											"pm.test('Schema is valid', () => {\r",
 											"    pm.response.to.have.jsonSchema(schemaObject);\r",
 											"});\r",
-											"/*\r",
 											"pm.test(\"Limit is respected\", () => {\r",
 											"    const jsonData = pm.response.json();\r",
 											"    pm.expect(jsonData.length).to.eql(1);\r",
 											"});\r",
-											"*/"
+											""
 										],
 										"type": "text/javascript"
 									}
@@ -416,6 +584,7 @@
 									"pm.test(\"Status code is 200\", () => {",
 									"    pm.response.to.have.status(200);",
 									"});",
+									"",
 									""
 								]
 							}

@@ -1,5 +1,6 @@
 package org.dcsa.iot.commercial.transferobjects;
 
+import jakarta.persistence.GeneratedValue;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -10,8 +11,8 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public record EventMetadataTO(
-    @NotNull UUID eventID,
-    @NotNull OffsetDateTime eventCreatedDateTime,
+    UUID eventID,
+    OffsetDateTime eventCreatedDateTime,
     UUID retractedEventID,
     @NotNull @Valid PartyTO publisher,
     @NotNull PublisherRole publisherRole,

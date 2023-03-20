@@ -69,4 +69,11 @@ public class IoTCommercialEvent {
   @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   @JoinColumn(name = "event_location_id")
   private Location eventLocation;
+
+  @PrePersist
+  void setIdIfMissing() {
+    if (eventID == null) {
+      eventID = UUID.randomUUID();
+    }
+  }
 }

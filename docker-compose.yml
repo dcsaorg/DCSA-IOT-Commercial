@@ -2,6 +2,7 @@ version: '3.5'
 
 services:
     dcsa-iot-commercial:
+        container_name: dcsa_iot
         build:
            .
         ports:
@@ -16,6 +17,10 @@ services:
           options:
             max-file: '10'
             max-size: 200k
+        links:
+          - dcsa-test-db:dcsa-test-db
+        depends_on:
+          - dcsa-test-db
 
     dcsa-test-db:
         image: postgres:15-alpine
