@@ -5,9 +5,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
-import org.dcsa.iot.commercial.domain.persistence.entity.EventCache_;
-import org.dcsa.iot.commercial.domain.persistence.entity.enums.IoTEventTypeCode;
+import org.dcsa.iot.commercial.domain.persistence.entity.IoTCommercialEvent_;
 import org.dcsa.iot.commercial.domain.persistence.repository.specification.EventCacheSpecification.EventCacheFilters;
+import org.dcsa.iot.commercial.domain.valueobjects.enums.IoTEventTypeCode;
 import org.dcsa.iot.commercial.service.IoTCommercialEventService;
 import org.dcsa.iot.commercial.transferobjects.IoTCommercialEventTO;
 import org.dcsa.skernel.infrastructure.http.queryparams.DCSAQueryParameterParser;
@@ -32,15 +32,15 @@ import static org.dcsa.skernel.infrastructure.util.EnumUtil.toEnumList;
 @RequestMapping("${spring.application.context-path}")
 @RequiredArgsConstructor
 public class IoTCommercialEventController {
-  private final List<Order> defaultSort = List.of(new Sort.Order(Sort.Direction.ASC, EventCache_.EVENT_CREATED_DATE_TIME));
-  private final SortableFields sortableFields = SortableFields.of(EventCache_.EVENT_CREATED_DATE_TIME, EventCache_.EVENT_DATE_TIME);
+  private final List<Order> defaultSort = List.of(new Sort.Order(Sort.Direction.ASC, IoTCommercialEvent_.EVENT_CREATED_DATE_TIME));
+  private final SortableFields sortableFields = SortableFields.of(IoTCommercialEvent_.EVENT_CREATED_DATE_TIME, IoTCommercialEvent_.EVENT_DATE_TIME);
   private static final String IoT_EVENT_TYPES = "DETC";
   private final IoTCommercialEventService ioTCommercialEventService;
   private final DCSAQueryParameterParser queryParameterParser;
 
   @GetMapping(path = "/events/{eventID}")
   @ResponseStatus(HttpStatus.OK)
-  public IoTCommercialEventTO findEvent(@PathVariable("eventID") UUID eventID) {
+  public IoTCommercialEventTO findEvent(@PathVariable("eventID") String eventID) {
     return ioTCommercialEventService.findEvent(eventID);
   }
 

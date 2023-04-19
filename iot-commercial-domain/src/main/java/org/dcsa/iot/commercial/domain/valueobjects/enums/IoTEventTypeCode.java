@@ -1,4 +1,4 @@
-package org.dcsa.iot.commercial.domain.persistence.entity.enums;
+package org.dcsa.iot.commercial.domain.valueobjects.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

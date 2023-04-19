@@ -46,6 +46,4 @@ tables:
   - table: iot_event_type
     file: ioteventtypecodes.csv
 
-  - table: iot_event_code
-    file: iottypecodes.csv
 

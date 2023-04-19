@@ -8,4 +8,4 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface IoTCommercialEventRepository extends JpaRepository<IoTCommercialEvent, UUID> { }
+public interface IoTCommercialEventRepository extends JpaRepository<IoTCommercialEvent, String>, JpaSpecificationExecutor<IoTCommercialEvent>  { }

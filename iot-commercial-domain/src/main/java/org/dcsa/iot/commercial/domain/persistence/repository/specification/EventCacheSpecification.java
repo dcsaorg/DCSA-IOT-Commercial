@@ -4,22 +4,27 @@ import jakarta.persistence.criteria.*;
 import lombok.Builder;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.dcsa.iot.commercial.domain.persistence.entity.DocumentReference;
 import org.dcsa.iot.commercial.domain.persistence.entity.DocumentReference_;
-import org.dcsa.iot.commercial.domain.persistence.entity.EventCache;
-import org.dcsa.iot.commercial.domain.persistence.entity.EventCache_;
+import org.dcsa.iot.commercial.domain.persistence.entity.IoTCommercialEvent;
 import org.dcsa.iot.commercial.domain.persistence.entity.IoTCommercialEvent_;
-import org.dcsa.iot.commercial.domain.persistence.entity.enums.EventType;
-import org.dcsa.iot.commercial.domain.persistence.entity.enums.IoTEventTypeCode;
+import org.dcsa.iot.commercial.domain.valueobjects.enums.DocumentReferenceType;
+import org.dcsa.iot.commercial.domain.valueobjects.enums.IoTEventTypeCode;
 import org.dcsa.skernel.infrastructure.http.queryparams.ParsedQueryParameter;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
+import static org.dcsa.iot.commercial.domain.valueobjects.enums.DocumentReferenceType.BKG;
+import static org.dcsa.iot.commercial.domain.valueobjects.enums.DocumentReferenceType.CBR;
 
 @Slf4j
 @UtilityClass
 public class EventCacheSpecification {
+  public static final Set<DocumentReferenceType> CARRIER_BOOKING_REF_TYPES = Set.of(BKG, CBR);
 
   public record EventCacheFilters(
     List<ParsedQueryParameter<OffsetDateTime>> eventCreatedDateTime,
@@ -32,53 +37,63 @@ public class EventCacheSpecification {
     public EventCacheFilters { }
   }
 
-  public static Specification<EventCache> withFilters(final EventCacheFilters filters) {
+  public static Specification<IoTCommercialEvent> withFilters(final EventCacheFilters filters) {
     log.debug("Searching based on {}", filters);
 
-    return (Root<EventCache> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
+    return (Root<IoTCommercialEvent> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
       List<Predicate> predicates = new ArrayList<>();
-      JsonPathExpressionBuilder jsonPath = new JsonPathExpressionBuilder(root, builder, EventCache_.CONTENT);
-      predicates.add(builder.equal(root.get(EventCache_.EVENT_TYPE), EventType.IOT_COMMERCIAL));
 
       handleParsedQueryParameter(
         predicates,
         builder,
-        root.get(EventCache_.EVENT_CREATED_DATE_TIME),
+        root.get(IoTCommercialEvent_.EVENT_CREATED_DATE_TIME),
         filters.eventCreatedDateTime
       );
 
       handleParsedQueryParameter(
         predicates,
         builder,
-        root.get(EventCache_.EVENT_DATE_TIME),
+        root.get(IoTCommercialEvent_.EVENT_DATE_TIME),
         filters.eventDateTime
       );
 
       if (filters.iotEventTypeCodes != null && !filters.iotEventTypeCodes.isEmpty()) {
-        predicates.add(
-          jsonPath
-            .of(IoTCommercialEvent_.IOT_EVENT_TYPE_CODE)
-            .in(filters.iotEventTypeCodes.stream().map(Enum::name).toList()));
+     //   predicates.add(root.get(IoTCommercialEvent_.IOT_EVENT_TYPE_CODE).in(filters.iotEventTypeCodes.stream().map(Enum::toString).toList()));
       }
 
-      conditionallyAddEqualsFilter(
-        predicates,
-        builder,
-        jsonPath.of(IoTCommercialEvent_.RELATED_DOCUMENT_REFERENCES, DocumentReference_.DOCUMENT_REFERENCE_VALUE),
-        filters.carrierBookingReference
-      );
+      if (filters.equipmentReference != null) {
+        predicates.add(builder.equal(root.get(IoTCommercialEvent_.EQUIPMENT_REFERENCE), filters.equipmentReference));
+      }
 
-      conditionallyAddEqualsFilter(
-        predicates,
-        builder,
-        jsonPath.of(IoTCommercialEvent_.EQUIPMENT_REFERENCE),
-        filters.equipmentReference
-      );
+      if (filters.equipmentReference != null) {
+        predicates.add(builder.equal(root.get(IoTCommercialEvent_.EQUIPMENT_REFERENCE), filters.equipmentReference));
+      }
+
+      handleDocumentReference(root, query, builder, predicates, CARRIER_BOOKING_REF_TYPES, filters.carrierBookingReference);
 
       return builder.and(predicates.toArray(Predicate[]::new));
     };
   }
 
+  private static void handleDocumentReference(
+          Root<IoTCommercialEvent> root,
+          CriteriaQuery<?> query,
+          CriteriaBuilder builder,
+          List<Predicate> predicates,
+          Set<DocumentReferenceType> types,
+          String reference
+  ) {
+    if (reference != null) {
+      Subquery<DocumentReference> subQuery = query.subquery(DocumentReference.class);
+      Root<DocumentReference> subRoot = subQuery.from(DocumentReference.class);
+      subQuery.select(subRoot).where(
+              builder.equal(root.get(DocumentReference_.EVENT_ID), subRoot.get(DocumentReference_.EVENT_ID)),
+              subRoot.get(DocumentReference_.DOCUMENT_REFERENCE_TYPE).in(types),
+              builder.equal(subRoot.get(DocumentReference_.DOCUMENT_REFERENCE_VALUE), reference)
+      );
+      predicates.add(builder.exists(subQuery));
+    }
+  }
   private static <T extends Comparable<T>> void handleParsedQueryParameter(
     List<Predicate> predicates,
     CriteriaBuilder builder,
@@ -105,27 +120,5 @@ public class EventCacheSpecification {
       case LT -> builder.lessThan(field, value);
     };
   }
-  private static <T> void conditionallyAddEqualsFilter(List<Predicate> predicates,
-                                                       CriteriaBuilder builder,
-                                                       Expression<?> field,
-                                                       T filterValue) {
-    if (filterValue != null) {
-      predicates.add(
-        builder.equal(
-          field,
-          filterValue
-        )
-      );
-    }
-  }
-    private record JsonPathExpressionBuilder(Root<EventCache> root, CriteriaBuilder builder, String jsonFieldName) {
-      public Expression<String> of(String... jsonPathElements) {
-        List<Expression<?>> expressions = new ArrayList<>();
-        expressions.add(root.get(jsonFieldName));
-        for (String e : jsonPathElements) {
-          expressions.add(builder.literal(e));
-        }
-        return builder.function("jsonb_extract_path_text", String.class, expressions.toArray(Expression[]::new));
-      }
-    }
+
 }

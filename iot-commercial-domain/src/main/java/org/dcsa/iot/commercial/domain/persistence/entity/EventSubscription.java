@@ -2,7 +2,7 @@ package org.dcsa.iot.commercial.domain.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.dcsa.iot.commercial.domain.persistence.entity.enums.IoTEventTypeCode;
+import org.dcsa.iot.commercial.domain.valueobjects.enums.IoTEventTypeCode;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.OffsetDateTime;

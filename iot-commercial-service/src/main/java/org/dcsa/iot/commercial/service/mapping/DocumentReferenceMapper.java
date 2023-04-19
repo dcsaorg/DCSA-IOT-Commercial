@@ -1,4 +1,4 @@
-package org.dcsa.iot.commercial.service.mapping.domain;
+package org.dcsa.iot.commercial.service.mapping;
 
 
 import org.dcsa.iot.commercial.domain.persistence.entity.DocumentReference;
