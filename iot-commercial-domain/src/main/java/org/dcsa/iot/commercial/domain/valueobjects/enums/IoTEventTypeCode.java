@@ -1,12 +1,11 @@
 package org.dcsa.iot.commercial.domain.valueobjects.enums;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
-@Getter
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum IoTEventTypeCode{
-  DETC ("Detected");
+  DETC ("DETC");
 
-  private final String value;
+  private final String description;
 }

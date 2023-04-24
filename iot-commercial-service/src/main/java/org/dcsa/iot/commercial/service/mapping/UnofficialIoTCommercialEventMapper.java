@@ -25,7 +25,7 @@ public interface UnofficialIoTCommercialEventMapper {
       builder
               .eventDateTime(payloadEvent.getEventDateTime())
               .equipmentReference(payloadEvent.getEquipmentReference())
-              .iotEventTypeCode(payloadEvent.getIotEventTypeCode());
+              .iotEventTypeCode(payloadEvent.getIotEventTypeCode().name());
     }
 
     return builder.build();

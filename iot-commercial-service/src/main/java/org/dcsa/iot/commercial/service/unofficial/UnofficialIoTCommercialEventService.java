@@ -1,13 +1,11 @@
 package org.dcsa.iot.commercial.service.unofficial;
 
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.dcsa.iot.commercial.domain.persistence.entity.DocumentReference;
 import org.dcsa.iot.commercial.domain.persistence.repository.IoTCommercialEventRepository;
 import org.dcsa.iot.commercial.domain.persistence.repository.unofficial.DocumentReferenceRepository;
 import org.dcsa.iot.commercial.domain.valueobjects.EventPayload;
-import org.dcsa.iot.commercial.service.mapping.DocumentReferenceMapper;
 import org.dcsa.iot.commercial.service.mapping.UnofficialIoTCommercialEventMapper;
 import org.dcsa.iot.commercial.transferobjects.EventMetadataTO;
 import org.dcsa.iot.commercial.transferobjects.EventPayloadTO;
@@ -49,7 +47,7 @@ public class UnofficialIoTCommercialEventService {
   }
 
   @Transactional(Transactional.TxType.MANDATORY)
-  public void saveDocumentReferences(
+  private void saveDocumentReferences(
           Set<DocumentReference> documentReferences, String eventID) {
     if (documentReferences != null && !documentReferences.isEmpty()) {
       documentReferences.forEach(

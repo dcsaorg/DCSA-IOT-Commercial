@@ -7,7 +7,7 @@ CREATE TABLE iot_commercial_event (
 );
 CREATE INDEX ON iot_commercial_event (event_created_date_time);
 CREATE INDEX ON iot_commercial_event (event_date_time);
-CREATE INDEX reefer_event_type_code_idx ON iot_commercial_event USING btree ((content->>'iotEventTypeCode'));
+CREATE INDEX iot_event_type_code ON iot_commercial_event USING btree ((content->>'iotEventTypeCode'));
 CREATE INDEX equipment_reference_idx ON iot_commercial_event USING btree ((content->>'equipmentReference'));
 
 CREATE TABLE iot_commercial_event_document_reference (

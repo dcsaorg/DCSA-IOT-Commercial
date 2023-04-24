@@ -35,9 +35,8 @@ public class IoTCommercialEvent {
   @Column(name = "event_date_time")
   private OffsetDateTime eventDateTime;
 
-  @Formula("content->>'iotEventTypeCodes'")
-  @Enumerated(EnumType.STRING)
-  private IoTEventTypeCode iotEventTypeCode;
+  @Formula("content->>'iotEventTypeCode'")
+  private String iotEventTypeCode;
 
   @Formula("content->>'equipmentReference'")
   private String equipmentReference;

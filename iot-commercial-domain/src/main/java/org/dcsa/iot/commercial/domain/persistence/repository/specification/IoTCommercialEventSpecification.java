@@ -23,21 +23,22 @@ import static org.dcsa.iot.commercial.domain.valueobjects.enums.DocumentReferenc
 
 @Slf4j
 @UtilityClass
-public class EventCacheSpecification {
+public class IoTCommercialEventSpecification {
+
   public static final Set<DocumentReferenceType> CARRIER_BOOKING_REF_TYPES = Set.of(BKG, CBR);
 
-  public record EventCacheFilters(
+  public record IoTCommercialEventFilters(
     List<ParsedQueryParameter<OffsetDateTime>> eventCreatedDateTime,
     List<ParsedQueryParameter<OffsetDateTime>> eventDateTime,
-    List<IoTEventTypeCode> iotEventTypeCodes,
+    Set<IoTEventTypeCode> iotEventTypeCodes,
     String carrierBookingReference,
     String equipmentReference
   ) {
     @Builder
-    public EventCacheFilters { }
+    public IoTCommercialEventFilters { }
   }
 
-  public static Specification<IoTCommercialEvent> withFilters(final EventCacheFilters filters) {
+  public static Specification<IoTCommercialEvent> withFilters(final IoTCommercialEventFilters filters) {
     log.debug("Searching based on {}", filters);
 
     return (Root<IoTCommercialEvent> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
@@ -58,11 +59,9 @@ public class EventCacheSpecification {
       );
 
       if (filters.iotEventTypeCodes != null && !filters.iotEventTypeCodes.isEmpty()) {
-     //   predicates.add(root.get(IoTCommercialEvent_.IOT_EVENT_TYPE_CODE).in(filters.iotEventTypeCodes.stream().map(Enum::toString).toList()));
-      }
+        predicates.add(
+                root.get(IoTCommercialEvent_.IOT_EVENT_TYPE_CODE).in(filters.iotEventTypeCodes.stream().map(Enum::name).toList()));
 
-      if (filters.equipmentReference != null) {
-        predicates.add(builder.equal(root.get(IoTCommercialEvent_.EQUIPMENT_REFERENCE), filters.equipmentReference));
       }
 
       if (filters.equipmentReference != null) {

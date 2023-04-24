@@ -8,7 +8,8 @@ import org.dcsa.iot.commercial.transferobjects.EventPayloadTO;
 import org.dcsa.iot.commercial.transferobjects.IoTCommercialEventTO;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",
+        uses = {DocumentReferenceMapper.class})
 public interface IoTCommercialEventTOMapper {
 
   default IoTCommercialEventTO toDTO(IoTCommercialEvent event) {
@@ -28,5 +29,4 @@ public interface IoTCommercialEventTOMapper {
   EventMetadataTO toMetadataTO(IoTCommercialEvent event);
   EventMetadataTO toRetractedEvent(IoTCommercialEvent event);
   EventPayloadTO toPayloadTO(EventPayload ioTCommercialDomainEvent);
-
 }
