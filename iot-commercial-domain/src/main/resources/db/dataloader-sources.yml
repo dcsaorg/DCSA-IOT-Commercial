@@ -21,17 +21,8 @@ defaults:
     onChecksumError: REFRESH
 
 sources:
-  - path: classpath:db/referencedata.d
-    type: csv
-    groups: [reference]
-    includes: [party_function, event_classifier]
-
-  - path: classpath:db/samples.d
-    type: csv
-    groups: [sample]
-    includes: [carrier]
 
   - path: classpath:db/reference.d
     type: csv
     groups: [reference]
-    dependsOn: [reference, sample]
+    includes: [iot_event_type]

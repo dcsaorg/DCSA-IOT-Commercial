@@ -1,4 +1,4 @@
-package org.dcsa.iot.commercial.transferobjects.enums;
+package org.dcsa.iot.commercial.domain.valueobjects.enums;
 
 import lombok.AccessLevel;
 import lombok.Getter;
